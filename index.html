@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Transliterate</title>
+    <link rel="stylesheet" type="text/css" href="css/layout.css">
+  </head>
+  <body>
+    <div class="container">
+      <textarea class="english" rows="4" cols="50" placeholder="enter something"></textarea>
+      <textarea class="nepali" rows="4" cols="50">
+      </textarea>
+    </div>
+    <script type="text/javascript">
+      // var intervalId = setInterval(function(){
+        var english = document.getElementsByClassName("english")[0];
+        english.addEventListener("keypress", function(){
+          // var val = english.value();
+          document.getElementsByClassName("nepali")[0].innerHTML = "Hello World";
+        });
+      // }, 1);
+
+
+    </script>
+  </body>
+</html>
