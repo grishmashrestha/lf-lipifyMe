@@ -1,23 +1,52 @@
+
+<!DOCTYPE html>
 <html>
   <head>
     <title>Transliterate</title>
     <link rel="stylesheet" type="text/css" href="css/layout.css">
+    <meta charset="UTF-8">
   </head>
   <body>
     <div class="container">
-      <textarea class="english" rows="4" cols="50" placeholder="enter something"></textarea>
-      <textarea class="nepali" rows="4" cols="50">
-      </textarea>
+      <textarea class="english" rows="4" cols="50" placeholder="enter something nepali in roman"></textarea>
+      <textarea class="nepali" rows="4" cols="50" placeholder=""></textarea>
     </div>
     <script type="text/javascript">
-      // var intervalId = setInterval(function(){
-        var english = document.getElementsByClassName("english")[0];
-        english.addEventListener("keypress", function(){
-          // var val = english.value();
-          document.getElementsByClassName("nepali")[0].innerHTML = "Hello World";
-        });
-      // }, 1);
 
+    var vowelsAndNumerals = {"a":"अ","aa":"आ","i":"इ","ii":"ई","u":"उ","oo":"ऊ","e":"ए","ai":"ऐ","o":"ओ","au":"औ","am":"अं","om":"ॐ","aum":"ॐ","rr":"र्‍","rri":"ऋ","rree":"ॠ","0":"०","1":"१","2":"२","3":"३","4":"४","5":"५","6":"६","7":"७","8":"८","9":"९",".":"।","*":"ं","**":"ँ"};
+
+    var consonants = {"ka":"क","qa":"क","ca":"क","kha":"ख","ga":"ग","gha":"घ","nga":"ङ","cha":"च","chha":"छ","ja":"ज","za":"ज","jha":"झ","yna":"ञ","Ta":"ट","Tha":"ठ","Da":"ड","Dha":"ढ","Na":"ण","ta":"त","tha":"थ","da":"द","dha":"ध","na":"न","pa":"प","pha":"फ","fa":"फ","ba":"ब","bha":"भ","ma":"म","ya":"य","ra":"र","la":"ल","va":"व","wa":"व","sha":"श","Sha":"ष","sa":"स","ha":"ह","ksha":"क्ष","xa":"क्ष","tra":"त्र","gyna":"ज्ञ"};
+
+    var diacriticals = {"aa":"ा","i":"ि","ii":"ी","ee":"ी","u":"ु","oo":"ू","e":"े","ai":"ै","o":"ो","au":"ौ","*":"ं","a*":"ं","**":"ँ","raa":"्रा","ra":"्र","a**":"ँ","\\\\":"्","a\\\\":"्"};
+
+    var flag;
+
+    var english = document.getElementsByClassName("english")[0];
+
+    english.addEventListener("keypress", function(){
+      var letter = String.fromCharCode(event.keyCode)
+
+      if (flag) {
+        debugger;
+        letter = flag + letter;
+        flag = letter;
+      }
+      var returnValue = vowelsAndNumerals[letter] || consonants[letter] || diacriticals[letter];
+      var previousContent = document.getElementsByClassName("nepali")[0].value;
+      if (returnValue) {
+        document.getElementsByClassName("nepali")[0].value = previousContent + returnValue;
+        flag = '';
+      }
+      else {
+        flag = letter;
+      }
+    });
+
+
+
+      // // var intervalId = setInterval(function(){
+      //     // var val = english.value();
+      // // }, 1);  
 
     </script>
   </body>
