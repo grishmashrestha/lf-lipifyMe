@@ -149,10 +149,9 @@ function LipiTransliterate () {
     ' ' : ' '
   };
 
-
   var undetermined;
-  var previousLast;
   var previousLetter;
+  var previousLastLetter;
 
   var english = document.getElementsByClassName('transliterateThis')[0];
   var nepali = document.getElementsByClassName('nepali')[0];
@@ -165,8 +164,68 @@ function LipiTransliterate () {
   var startTransliterate = function() {
     english.addEventListener("keypress", function(){
       var letter = String.fromCharCode(event.keyCode);
-      var currentLetter = letter;
+      var currentLetter = letter; // for cross checking
+      var previousContent = nepali.value;
+      var returnValue;
 
+      if (undetermined) {
+
+        if (isVowel(currentLetter)) {
+          letter = undetermined + currentLetter;
+          if (currentLetter == 'a') {
+            returnValue = consonants[letter];
+          }
+          else {
+            returnValue = consonants2[undetermined] + diacriticals[currentLetter];            
+          }
+
+          writeNepali(previousContent + returnValue);
+          previousLetter = letter;
+          previousLastLetter = currentLetter;
+          undetermined ='';
+        }
+        else if (isSpace(currentLetter)) {
+          // for space, complete the letter
+          letter = undetermined;
+          returnValue = consonants2[letter];
+          if (returnValue) {
+            writeNepali(previousContent + returnValue + currentLetter);
+            previousLetter = letter;
+            previousLastLetter = currentLetter;
+            undetermined ='';
+          }
+          else {
+            undetermined = undetermined + currentLetter;
+            previousLetter = '';
+            previousLastLetter = '';
+            // do nothing for now.. do not display anything
+          }
+        }
+        else {
+          
+          if (['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) {
+            undetermined = undetermined + currentLetter;
+            // previousLetter = letter;
+            // previousLastLetter = currentLetter;
+          }
+          else {
+            undetermined = undetermined + currentLetter;
+            //do nothing for now.. randow values are just ignored for now
+          }
+        }
+      }
+      else {
+        returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
+        if (returnValue) {
+          writeNepali(previousContent + returnValue);
+          undetermined = '';
+          // previousLetter = letter;
+          // previousLastLetter = letter[letter.length-1];
+        }
+        else {
+          undetermined = letter;
+        }           
+      }
     });
   }
 
@@ -177,7 +236,7 @@ function LipiTransliterate () {
       switch(KeyID)
       {
         case 8:
-        debugger;
+        
         break; 
         case 46:
         alert("delete");
@@ -193,6 +252,19 @@ function LipiTransliterate () {
   }
 
   var isVowel = function(letter) {
-    vowels[letter];
+    return vowels[letter];
   }
+
+  var isConsonant = function(letter) {
+    return consonants[letter];
+  }
+
+  var isConsonant2 = function(letter) {
+    return consonants2[letter];
+  }
+
+  var isSpace = function(letter) {
+    return space[letter];
+  }
+
 }
