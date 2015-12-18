@@ -1,5 +1,5 @@
 function LipiTransliterate () {
-  var vowelsAndNumerals = {
+  var vowels = {
     "a":"अ",
     "aa":"आ",
     "i":"इ",
@@ -16,6 +16,11 @@ function LipiTransliterate () {
     "rr":"र्‍",
     "rri":"ऋ",
     "rree":"ॠ",
+    "*":"ं",
+    "**":"ँ"
+  };
+
+  var numerals = {
     "0":"०",
     "1":"१",
     "2":"२",
@@ -26,10 +31,8 @@ function LipiTransliterate () {
     "7":"७",
     "8":"८",
     "9":"९",
-    ".":"।",
-    "*":"ं",
-    "**":"ँ"
-  };
+    ".":"।"
+  }
 
   var consonants = {
     "ka":"क",
@@ -121,9 +124,7 @@ function LipiTransliterate () {
     "gyn":"ज्ञ"
   };
   
-   // consonants = consonants2;
-
-   var diacriticals = {
+  var diacriticals = {
     "aa":"ा",
     "i":"ि",
     "ii":"ी",
@@ -153,7 +154,8 @@ function LipiTransliterate () {
   var previousLast;
   var previousLetter;
 
-  var english = document.getElementsByClassName("transliterateThis")[0];
+  var english = document.getElementsByClassName('transliterateThis')[0];
+  var nepali = document.getElementsByClassName('nepali')[0];
 
   this.init = function() {
     startTransliterate();
@@ -165,58 +167,32 @@ function LipiTransliterate () {
       var letter = String.fromCharCode(event.keyCode);
       var currentLetter = letter;
 
-      if (undetermined) {
-        letter = undetermined + letter;
-        undetermined = letter;
-        var returnValue = vowelsAndNumerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
-        var previousContent = document.getElementsByClassName("nepali")[0].value;
-        if (returnValue) {
-          document.getElementsByClassName("nepali")[0].value = previousContent + returnValue;
-          undetermined = '';
-        }
-        else {
-          var returnValue2 = consonants[currentLetter] || diacriticals[currentLetter];
-          if (returnValue2) {
-            previousLetterNep = consonants2[previousLetter];
-            document.getElementsByClassName("nepali")[0].value = previousContent + previousLetterNep + returnValue2 ;
-            undetermined = '';
-          }
-          else {
-            undetermined = letter;        
-          }
-        }    
-      }
-      else {
-        var returnValue = vowelsAndNumerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
-        var previousContent = document.getElementsByClassName("nepali")[0].value;
-        if (returnValue) {
-          document.getElementsByClassName("nepali")[0].value = previousContent + returnValue;
-          undetermined = '';
-        }
-        else {
-          undetermined = letter;
-        }    
-      }
-      previousLetter = letter;
-      previousLastm = letter[letter.length-1];
     });
   }
 
-var listenForBackspace = function() {
-  english.addEventListener("keydown", function(){
-    var letter = String.fromCharCode(event.keyCode);
-    var KeyID = event.keyCode;
-    switch(KeyID)
-    {
-      case 8:
-      debugger;
-      break; 
-      case 46:
-      alert("delete");
-      break;
-      default:
-      break;
-    }
-  });
-}
+  var listenForBackspace = function() {
+    english.addEventListener("keydown", function(){
+      var letter = String.fromCharCode(event.keyCode);
+      var KeyID = event.keyCode;
+      switch(KeyID)
+      {
+        case 8:
+        debugger;
+        break; 
+        case 46:
+        alert("delete");
+        break;
+        default:
+        break;
+      }
+    });
+  }
+
+  var writeNepali = function(val) {
+    nepali.value = val;
+  }
+
+  var isVowel = function(letter) {
+    vowels[letter];
+  }
 }
