@@ -174,7 +174,6 @@ function LipiTransliterate () {
           letter = undetermined + currentLetter;
           if (currentLetter == 'a') {
             returnValue = consonants[letter];
-            letter = undetermined;
           }
           else {
             returnValue = consonants2[undetermined] + diacriticals[currentLetter];            
@@ -215,36 +214,74 @@ function LipiTransliterate () {
         }
       }
       else {
-
         if (isVowel(currentLetter)) {
-          
           if (isVowel(previousLastLetter)) {
             letter = previousLastLetter + currentLetter;
             var diacriti = diacriticals[letter];
             if (diacriti) {
-              if (previousLastLetter == 'a') {
-                var newLetter = previousLetter.substring(0, previousLetter.length);
+              if (['a', 'i', 'o'].indexOf(previousLastLetter) > -1) {
+                var newLetter = letter;
+                if (['a', 'i', 'o'].indexOf(previousLetter) > -1) {
+                  returnValue = vowels[newLetter];                  
+                }
+                else {
+                  var newLetter = previousLetter.substring(0, previousLetter.length-1);
+                  returnValue = consonants2[newLetter] + diacriti;
+                }
               }
               else {
                 var newLetter = previousLetter.substring(0, previousLetter.length-1);                
+                returnValue = consonants2[newLetter] + diacriti;
               }
-              returnValue = consonants2[newLetter] + diacriti;
 
-              previousContent = previousContent.substring(0, (previousContent.length-previousLetter.length));
+              if (previousLastLetter == 'a') {
+                if (previousLetter == previousLastLetter) {
+                  previousLetterLength = previousLetter.length;
+                }
+                else {
+                  previousLetterLength = 1;
+                }
+              }
+              else {
+                if (['i', 'o'].indexOf(previousLastLetter) > -1) {
+                  debugger
+                  previousLetterLength = 2;
+                }
+                else {
+                  previousLetterLength = previousLetter.length;                  
+                }
+
+              }
+              previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
               writeNepali(previousContent + returnValue);
+              undetermined = '';
+              previousLetter = letter;
+              previousLastLetter = '';
             }
             else {
               returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
               if (returnValue) {
                 writeNepali(previousContent + returnValue);
                 undetermined = '';
-                // previousLetter = letter;
-                // previousLastLetter = letter[letter.length-1];
+                previousLetter = letter;
+                previousLastLetter = currentLetter;
               }
               else {
                 undetermined = letter;
               }           
             }
+          }
+          else {
+            returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
+            if (returnValue) {
+              writeNepali(previousContent + returnValue);
+              undetermined = '';
+              previousLetter = letter;
+              previousLastLetter = currentLetter;
+            }
+            else {
+              undetermined = letter;
+            }           
           }
         }
         else {
@@ -252,8 +289,8 @@ function LipiTransliterate () {
           if (returnValue) {
             writeNepali(previousContent + returnValue);
             undetermined = '';
-            // previousLetter = letter;
-            // previousLastLetter = letter[letter.length-1];
+            previousLetter = letter;
+            previousLastLetter = currentLetter;
           }
           else {
             undetermined = letter;
