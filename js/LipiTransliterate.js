@@ -207,6 +207,12 @@ function LipiTransliterate () {
             previousLetter = undetermined;
             previousLastLetter = currentLetter;
           }
+          else if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter == currentLetter) && (currentLetter == 'h')) {
+            undetermined = undetermined + currentLetter;
+            previousLetter = undetermined;
+            previousLastLetter = currentLetter;
+
+          }
           else {
             var halfLetter = undetermined;
             returnValue = consonants2[halfLetter] + diacriticals['\\'];
