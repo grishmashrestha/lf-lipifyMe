@@ -202,7 +202,7 @@ function LipiTransliterate () {
           }
         }
         else {
-          if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1)) {
+          if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter != currentLetter)) {
             undetermined = undetermined + currentLetter;
             previousLetter = undetermined;
             previousLastLetter = currentLetter;
