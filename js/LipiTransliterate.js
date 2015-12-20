@@ -236,16 +236,20 @@ function LipiTransliterate () {
 
               if (previousLastLetter == 'a') {
                 if (previousLetter == previousLastLetter) {
-                  previousLetterLength = previousLetter.length;
+                  previousLetterLength = previousLetter.length; //for kaa
                 }
                 else {
-                  previousLetterLength = 1;
+                  previousLetterLength = 1; //for ka
                 }
               }
               else {
                 if (['i', 'o'].indexOf(previousLastLetter) > -1) {
-                  debugger
-                  previousLetterLength = 2;
+                  if ((previousLastLetter == previousLetter) && (previousLetter == 'o')) {
+                    previousLetterLength = 1; // for 'oo' -> ऊ
+                  }
+                  else {
+                    previousLetterLength = 2;                    
+                  }
                 }
                 else {
                   previousLetterLength = previousLetter.length;                  
