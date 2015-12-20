@@ -202,14 +202,23 @@ function LipiTransliterate () {
           }
         }
         else {
-          if (['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) {
+          if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1)) {
             undetermined = undetermined + currentLetter;
             previousLetter = undetermined;
             previousLastLetter = currentLetter;
           }
           else {
-            undetermined = undetermined + currentLetter;
-            //do nothing for now.. randow values are just ignored for now
+            var halfLetter = undetermined;
+            returnValue = consonants2[halfLetter] + diacriticals['\\'];
+            if (returnValue) {
+              writeNepali(previousContent + returnValue);
+              undetermined = currentLetter;
+              previousLastLetter = currentLetter;
+              previousLetter = currentLetter;
+            }
+            else {
+              undetermined = undetermined + currentLetter;
+            }
           }
         }
       }
@@ -302,44 +311,44 @@ function LipiTransliterate () {
         }
       }
     });
-}
+  }
 
-var listenForBackspace = function() {
-  english.addEventListener("keydown", function(){
-    var letter = String.fromCharCode(event.keyCode);
-    var KeyID = event.keyCode;
-    switch(KeyID)
-    {
-      case 8:
+  var listenForBackspace = function() {
+    english.addEventListener("keydown", function(){
+      var letter = String.fromCharCode(event.keyCode);
+      var KeyID = event.keyCode;
+      switch(KeyID)
+      {
+        case 8:
 
-      break; 
-      case 46:
-      alert("delete");
-      break;
-      default:
-      break;
-    }
-  });
-}
+        break; 
+        case 46:
+        alert("delete");
+        break;
+        default:
+        break;
+      }
+    });
+  }
 
-var writeNepali = function(val) {
-  nepali.value = val;
-}
+  var writeNepali = function(val) {
+    nepali.value = val;
+  }
 
-var isVowel = function(letter) {
-  return vowels[letter];
-}
+  var isVowel = function(letter) {
+    return vowels[letter];
+  }
 
-var isConsonant = function(letter) {
-  return consonants[letter];
-}
+  var isConsonant = function(letter) {
+    return consonants[letter];
+  }
 
-var isConsonant2 = function(letter) {
-  return consonants2[letter];
-}
+  var isConsonant2 = function(letter) {
+    return consonants2[letter];
+  }
 
-var isSpace = function(letter) {
-  return space[letter];
-}
+  var isSpace = function(letter) {
+    return space[letter];
+  }
 
 }
