@@ -14,7 +14,7 @@ function LipiTransliterate () {
     "om":"ॐ",
     "aum":"ॐ",
     "rri":"ऋ",
-    "rree":"ॠ",
+    "rre":"ॠ",
     "*":"ं",
     "**":"ँ"
   };
@@ -142,8 +142,8 @@ function LipiTransliterate () {
     "a**":"ँ",
     "\\":"्",
     "a\\":"्",
-    "ri":"ृ",
-    "rri":"ॄ",
+    "rri":"ृ",
+    "rre":"ॄ",
     "ah":" ः"
   };
 
@@ -154,6 +154,8 @@ function LipiTransliterate () {
   var undetermined;
   var previousLetter;
   var previousLastLetter;
+  var halfLetterWithR;
+  var rCount=0;
 
   var english = document.getElementsByClassName('transliterateThis')[0];
   var nepali = document.getElementsByClassName('nepali')[0];
@@ -171,20 +173,43 @@ function LipiTransliterate () {
       var returnValue;
 
       if (undetermined) {
-
         if (isVowel(currentLetter)) {
-          letter = undetermined + currentLetter;
-          if (currentLetter == 'a') {
-            returnValue = consonants[letter];
+          if ((halfLetterWithR) && (currentLetter == 'i') && (previousLastLetter == 'r') && (rCount == 2)) {
+            var letter = halfLetterWithR.substring(0, 1);
+            returnValue = letter + diacriticals['rri'];
+            previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+            writeNepali(previousContent + returnValue);
+            previousLetter = returnValue;
+            previousLastLetter = currentLetter;
+            undetermined ='';
+            halfLetterWithR = '';
+            rCount = 0;
+          }
+          else if ((halfLetterWithR) && (currentLetter == 'e') && (previousLastLetter == 'r') && (rCount == 2)) {
+            var letter = halfLetterWithR.substring(0, 1);  
+            returnValue = letter + diacriticals['rre'];
+            previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+            writeNepali(previousContent + returnValue);
+            previousLetter = returnValue;
+            previousLastLetter = currentLetter;
+            undetermined ='';
+            halfLetterWithR = '';
+            rCount = 0;
           }
           else {
-            returnValue = consonants2[undetermined] + diacriticals[currentLetter];            
-          }
+            letter = undetermined + currentLetter;
+            if (currentLetter == 'a') {
+              returnValue = consonants[letter];
+            }
+            else {
+              returnValue = consonants2[undetermined] + diacriticals[currentLetter];            
+            }
 
-          writeNepali(previousContent + returnValue);
-          previousLetter = letter;
-          previousLastLetter = currentLetter;
-          undetermined ='';
+            writeNepali(previousContent + returnValue);
+            previousLetter = letter;
+            previousLastLetter = currentLetter;
+            undetermined ='';
+          }
         }
         else if (isSpace(currentLetter)) {
           // for space, complete the letter
@@ -208,10 +233,41 @@ function LipiTransliterate () {
             undetermined = undetermined + currentLetter;
             if (consonants2[undetermined]) { // if undetermined + currentLetter combo will generate a full letter on next iteration
               previousLetter = undetermined;
-              previousLastLetter = currentLetter;              
+              previousLastLetter = currentLetter;
             }
             else { // if undetermined + currentLetter do not form a letter on next iteration such as g+r unlike ch+h
               var halfLetter = previousLetter;
+              returnValue = consonants2[halfLetter] + diacriticals['\\'];
+              if (returnValue) {
+                writeNepali(previousContent + returnValue);
+                rCount=1;
+                halfLetterWithR = returnValue;                   
+                undetermined = currentLetter;
+                previousLastLetter = currentLetter;
+                previousLetter = currentLetter;
+              }
+              else {
+                undetermined = undetermined;
+              }
+            } 
+          }
+          else if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter == currentLetter) && (currentLetter == 'h')) {
+            // for chh 
+            undetermined = undetermined + currentLetter;
+            previousLetter = undetermined;
+            previousLastLetter = currentLetter;
+
+          }
+          else {
+            if ((currentLetter == previousLastLetter) && (currentLetter == 'r')) {
+              undetermined = previousLastLetter + currentLetter;
+              previousLastLetter = currentLetter;
+              previousLetter = undetermined;
+              rCount+=1;
+              halfLetterWithR = halfLetterWithR; // keep it same
+            }
+            else {
+              var halfLetter = undetermined;
               returnValue = consonants2[halfLetter] + diacriticals['\\'];
               if (returnValue) {
                 writeNepali(previousContent + returnValue);
@@ -221,28 +277,10 @@ function LipiTransliterate () {
               }
               else {
                 undetermined = undetermined + currentLetter;
+                previousLastLetter = currentLetter;
+                previousLetter = currentLetter;
               }
-            } 
-          }
-          else if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter == currentLetter) && (currentLetter == 'h')) {
-            undetermined = undetermined + currentLetter;
-            previousLetter = undetermined;
-            previousLastLetter = currentLetter;
-
-          }
-          else {
-            var halfLetter = undetermined;
-            returnValue = consonants2[halfLetter] + diacriticals['\\'];
-            if (returnValue) {
-              writeNepali(previousContent + returnValue);
-              undetermined = currentLetter;
-              previousLastLetter = currentLetter;
-              previousLetter = currentLetter;
-            }
-            else {
-              undetermined = undetermined + currentLetter;
-              previousLastLetter = currentLetter;
-              previousLetter = currentLetter;
+              halfLetterWithR = '';              
             }
           }
         }
