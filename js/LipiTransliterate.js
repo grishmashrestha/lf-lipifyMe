@@ -269,9 +269,17 @@ function LipiTransliterate () {
             else {
               var halfLetter = undetermined;
               returnValue = consonants2[halfLetter] + diacriticals['\\'];
-              if (returnValue) {
+              if (returnValue && consonants2[halfLetter]) {
+                var isNumOrSpace =  numerals[currentLetter] || space[currentLetter];
+                if (isNumOrSpace) {
+                  returnValue = returnValue + isNumOrSpace;
+                  undetermined = ''  ;
+                }
+                else {
+                  undetermined = currentLetter;
+                  
+                }
                 writeNepali(previousContent + returnValue);
-                undetermined = currentLetter;
                 previousLastLetter = currentLetter;
                 previousLetter = currentLetter;
               }
