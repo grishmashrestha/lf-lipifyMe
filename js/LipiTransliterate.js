@@ -206,11 +206,11 @@ function LipiTransliterate () {
         else {
           if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter != currentLetter)) {
             undetermined = undetermined + currentLetter;
-            if (consonants2[undetermined]) {
+            if (consonants2[undetermined]) { // if undetermined + currentLetter combo will generate a full letter on next iteration
               previousLetter = undetermined;
               previousLastLetter = currentLetter;              
             }
-            else {
+            else { // if undetermined + currentLetter do not form a letter on next iteration such as g+r unlike ch+h
               var halfLetter = previousLetter;
               returnValue = consonants2[halfLetter] + diacriticals['\\'];
               if (returnValue) {
