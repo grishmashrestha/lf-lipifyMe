@@ -13,7 +13,6 @@ function LipiTransliterate () {
     "am":"अं",
     "om":"ॐ",
     "aum":"ॐ",
-    "rr":"र्‍",
     "rri":"ऋ",
     "rree":"ॠ",
     "*":"ं",
@@ -142,7 +141,10 @@ function LipiTransliterate () {
     "ra":"्र",
     "a**":"ँ",
     "\\":"्",
-    "a\\":"्"
+    "a\\":"्",
+    "ri":"ृ",
+    "rri":"ॄ",
+    "ah":" ः"
   };
 
   var space = {
@@ -196,16 +198,31 @@ function LipiTransliterate () {
           }
           else {
             undetermined = undetermined + currentLetter;
-            previousLetter = '';
-            previousLastLetter = '';
+            previousLetter = undetermined;
+            previousLastLetter = currentLetter;
             // do nothing for now.. do not display anything
           }
         }
         else {
           if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter != currentLetter)) {
             undetermined = undetermined + currentLetter;
-            previousLetter = undetermined;
-            previousLastLetter = currentLetter;
+            if (consonants2[undetermined]) {
+              previousLetter = undetermined;
+              previousLastLetter = currentLetter;              
+            }
+            else {
+              var halfLetter = previousLetter;
+              returnValue = consonants2[halfLetter] + diacriticals['\\'];
+              if (returnValue) {
+                writeNepali(previousContent + returnValue);
+                undetermined = currentLetter;
+                previousLastLetter = currentLetter;
+                previousLetter = currentLetter;
+              }
+              else {
+                undetermined = undetermined + currentLetter;
+              }
+            } 
           }
           else if ((['h', 'g', 's', 'r', 'y'].indexOf(currentLetter) > -1) && (previousLastLetter == currentLetter) && (currentLetter == 'h')) {
             undetermined = undetermined + currentLetter;
@@ -224,6 +241,8 @@ function LipiTransliterate () {
             }
             else {
               undetermined = undetermined + currentLetter;
+              previousLastLetter = currentLetter;
+              previousLetter = currentLetter;
             }
           }
         }
@@ -313,6 +332,8 @@ function LipiTransliterate () {
           }
           else {
             undetermined = letter;
+            previousLastLetter = currentLetter;
+            previousLetter = currentLetter;
           }           
         }
       }
