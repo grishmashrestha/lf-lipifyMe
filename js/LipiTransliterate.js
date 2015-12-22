@@ -348,6 +348,9 @@ function LipiTransliterate () {
                 if (previousLetter == previousLastLetter) {
                   previousLetterLength = previousLetter.length; //for kaa
                 }
+                else if (previousLastLetter == currentLetter) {
+                  previousLetterLength = previousLetter.length - 1;
+                }
                 else {
                   previousLetterLength = 1; //for ka
                 }
@@ -369,6 +372,7 @@ function LipiTransliterate () {
                 }
 
               }
+
               previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
               writeNepali(previousContent + returnValue);
               undetermined = '';
