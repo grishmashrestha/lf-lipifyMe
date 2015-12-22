@@ -325,6 +325,7 @@ function LipiTransliterate () {
                 }
               }
               else {
+
                 if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'e') { //for ee -> एए
                   returnValue = vowels[previousLastLetter] + vowels[currentLetter];
                   letter = currentLetter;
@@ -332,7 +333,7 @@ function LipiTransliterate () {
                 }
                 else {
                   var newLetter = previousLetter.substring(0, previousLetter.length-1);
-                  returnValue = consonants2[newLetter] + diacriti;                    
+                  returnValue = consonants2[newLetter] + diacriti;
                 }                         
               }
               if (previousLastLetter == 'a') {
@@ -368,6 +369,15 @@ function LipiTransliterate () {
             }
             else {
               if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'u') { //for uu -> उउ
+                returnValue = vowels[currentLetter];
+                letter = currentLetter;
+                writeNepali(previousContent + returnValue);
+                undetermined = '';
+                previousLetter = letter;
+                previousLastLetter = currentLetter;
+              }
+              else if (previousLastLetter != currentLetter) {
+                // for occurrences such as oe, uo, ae, ea, etc where combination of two vowels do not form any diacriticals
                 returnValue = vowels[currentLetter];
                 letter = currentLetter;
                 writeNepali(previousContent + returnValue);
