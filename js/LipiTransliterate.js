@@ -236,18 +236,25 @@ function LipiTransliterate () {
               previousLastLetter = currentLetter;
             }
             else { // if undetermined + currentLetter do not form a letter on next iteration such as g+r unlike ch+h
-              var halfLetter = previousLetter;
-              returnValue = consonants2[halfLetter] + diacriticals['\\'];
-              if (returnValue) {
-                writeNepali(previousContent + returnValue);
-                rCount=1;
-                halfLetterWithR = returnValue;                   
-                undetermined = currentLetter;
-                previousLastLetter = currentLetter;
-                previousLetter = currentLetter;
+              if (currentLetter == 'r') {
+                var halfLetter = previousLetter;
+                returnValue = consonants2[halfLetter] + diacriticals['\\'];
+                if (returnValue) {
+                  writeNepali(previousContent + returnValue);
+                  rCount=1;
+                  halfLetterWithR = returnValue;                   
+                  undetermined = currentLetter;
+                  previousLastLetter = currentLetter;
+                  previousLetter = currentLetter;
+                }
+                else {
+                  undetermined = undetermined;
+                }
               }
               else {
-                undetermined = undetermined;
+                undetermined = previousLetter + currentLetter;
+                previousLastLetter = currentLetter;
+                previousLetter = undetermined;
               }
             } 
           }
@@ -336,7 +343,7 @@ function LipiTransliterate () {
                     previousLetterLength = 1; // for 'ii' -> ई
                   }
                   else {
-                    previousLetterLength = 2;                    
+                    previousLetterLength = returnValue.length;                    
                   }
                 }
                 else {
