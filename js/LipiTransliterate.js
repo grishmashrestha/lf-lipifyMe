@@ -196,6 +196,15 @@ function LipiTransliterate () {
             halfLetterWithR = '';
             rCount = 0;
           }
+          else if (((currentLetter == 'i') || (currentLetter == 'e')) && (previousLetter == 'rr') && (rCount == 1)) { // for rri and rre
+            letter = previousLetter + currentLetter;
+            returnValue = vowels[letter];
+            writeNepali(previousContent + returnValue);
+            previousLetter = letter;
+            previousLastLetter = currentLetter;
+            undetermined ='';
+            rCount = 0;
+          }
           else {
             letter = undetermined + currentLetter;
             if (currentLetter == 'a') {
