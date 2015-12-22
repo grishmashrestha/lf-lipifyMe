@@ -333,7 +333,16 @@ function LipiTransliterate () {
                 }
                 else {
                   var newLetter = previousLetter.substring(0, previousLetter.length-1);
-                  returnValue = consonants2[newLetter] + diacriti;
+                  if (consonants2[newLetter]) {
+                    returnValue = consonants2[newLetter] + diacriti;
+                  }
+                  else {
+                    if (currentLetter == previousLastLetter && currentLetter == '*') {
+                      // for ** -> ँ chandrabindu
+                      letter = previousLastLetter + currentLetter;
+                      returnValue = vowels[letter];
+                    }
+                  }
                 }                         
               }
               if (previousLastLetter == 'a') {
