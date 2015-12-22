@@ -135,7 +135,6 @@ function LipiTransliterate () {
     "o":"ो",
     "au":"ौ",
     "*":"ं",
-    "a*":"ं",
     "**":"ँ",
     "raa":"्रा",
     "ra":"्र",
