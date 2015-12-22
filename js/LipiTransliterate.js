@@ -273,11 +273,10 @@ function LipiTransliterate () {
                 var isNumOrSpace =  numerals[currentLetter] || space[currentLetter];
                 if (isNumOrSpace) {
                   returnValue = returnValue + isNumOrSpace;
-                  undetermined = ''  ;
+                  undetermined = '';
                 }
                 else {
-                  undetermined = currentLetter;
-                  
+                  undetermined = currentLetter;                  
                 }
                 writeNepali(previousContent + returnValue);
                 previousLastLetter = currentLetter;
@@ -310,10 +309,16 @@ function LipiTransliterate () {
                 }
               }
               else {
-                var newLetter = previousLetter.substring(0, previousLetter.length-1);                
-                returnValue = consonants2[newLetter] + diacriti;
-              }
+                if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'e') { //for ee -> एए
+                  returnValue = vowels[previousLastLetter] + vowels[currentLetter];
+                  letter = currentLetter;
 
+                }
+                else {
+                  var newLetter = previousLetter.substring(0, previousLetter.length-1);
+                  returnValue = consonants2[newLetter] + diacriti;                    
+                }                         
+              }
               if (previousLastLetter == 'a') {
                 if (previousLetter == previousLastLetter) {
                   previousLetterLength = previousLetter.length; //for kaa
@@ -326,6 +331,9 @@ function LipiTransliterate () {
                 if (['i', 'o'].indexOf(previousLastLetter) > -1) {
                   if ((previousLastLetter == previousLetter) && (previousLetter == 'o')) {
                     previousLetterLength = 1; // for 'oo' -> ऊ
+                  }
+                  else if ((previousLastLetter == previousLetter) && (previousLetter == 'i')) {
+                    previousLetterLength = 1; // for 'ii' -> ई
                   }
                   else {
                     previousLetterLength = 2;                    
@@ -343,16 +351,26 @@ function LipiTransliterate () {
               previousLastLetter = '';
             }
             else {
-              returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
-              if (returnValue) {
+              if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'u') { //for uu -> उउ
+                returnValue = vowels[currentLetter];
+                letter = currentLetter;
                 writeNepali(previousContent + returnValue);
                 undetermined = '';
                 previousLetter = letter;
                 previousLastLetter = currentLetter;
               }
               else {
-                undetermined = letter;
-              }           
+                returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
+                if (returnValue) {
+                  writeNepali(previousContent + returnValue);
+                  undetermined = '';
+                  previousLetter = letter;
+                  previousLastLetter = currentLetter;
+                }
+                else {
+                  undetermined = letter;
+                }
+              }
             }
           }
           else {
