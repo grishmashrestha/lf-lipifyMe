@@ -173,6 +173,8 @@ function LipiTransliterate () {
 
       if (undetermined) {
         if (isVowel(currentLetter)) {
+          var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
+
           if ((halfLetterWithR) && (currentLetter == 'i') && (previousLastLetter == 'r') && (rCount == 2)) {
             var letter = halfLetterWithR.substring(0, 1);
             returnValue = letter + diacriticals['rri'];
@@ -204,13 +206,48 @@ function LipiTransliterate () {
             undetermined ='';
             rCount = 0;
           }
+          else if (isGyn > -1) {
+            // if gyn is present 
+            var firstHalfLetterGyn = undetermined.substring(0, isGyn);
+            var prevLetterNep;
+            if (firstHalfLetterGyn) {
+              prevLetterNep = consonants2[firstHalfLetterGyn] +  diacriticals['\\'];
+            }
+            else {
+              prevLetterNep = '';
+            }
+            if (currentLetter == 'a') {
+              returnValue = prevLetterNep + consonants['gyna'];
+            }
+            else {
+              returnValue = prevLetterNep + consonants2['gyn'] + diacriticals[currentLetter];
+            }
+            writeNepali(previousContent + returnValue);
+            previousLetter = undetermined + currentLetter; 
+            undetermined = '';
+            previousLastLetter = currentLetter;
+          }
           else {
             letter = undetermined + currentLetter;
             if (currentLetter == 'a') {
-              returnValue = consonants[letter];
+              if (consonants[letter]) {
+                returnValue = consonants[letter];                
+              }
+              else {
+                var firstHalfLetterYPos = undetermined.search('y');
+                var firstHalfLetterY = undetermined.substring(0, firstHalfLetterYPos);
+                returnValue = consonants2[firstHalfLetterY] + diacriticals['\\'] + consonants[previousLastLetter + currentLetter];
+                letter = previousLastLetter + currentLetter;
+              }
             }
             else {
-              returnValue = consonants2[undetermined] + diacriticals[currentLetter];            
+              if (consonants2[undetermined]) {
+                returnValue = consonants2[undetermined] + diacriticals[currentLetter];                            
+              }
+              else {
+                letter = undetermined + currentLetter;
+                returnValue = letter;
+              }
             }
 
             writeNepali(previousContent + returnValue);
@@ -280,6 +317,11 @@ function LipiTransliterate () {
               previousLetter = undetermined;
               rCount+=1;
               halfLetterWithR = halfLetterWithR; // keep it same
+            }
+            else if (undetermined == 'y' && currentLetter == 'n') {
+              undetermined = undetermined + currentLetter;
+              previousLetter = undetermined;
+              previousLastLetter = undetermined;              
             }
             else {
               var halfLetter = undetermined;
