@@ -267,10 +267,31 @@ function LipiTransliterate () {
             undetermined ='';
           }
           else {
-            undetermined = undetermined + currentLetter;
-            previousLetter = undetermined;
-            previousLastLetter = currentLetter;
-            // do nothing for now.. do not display anything
+            var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
+            if (isGyn > -1) {
+              // if gyn is present 
+              var firstHalfLetterGyn = undetermined.substring(0, isGyn);
+              var prevLetterNep;
+              if (firstHalfLetterGyn) {
+                prevLetterNep = consonants2[firstHalfLetterGyn] +  diacriticals['\\'];
+              }
+              else {
+                prevLetterNep = '';
+              }
+
+              returnValue = prevLetterNep + consonants2['gyn'] + space[currentLetter];
+              writeNepali(previousContent + returnValue);
+              previousLetter = undetermined + currentLetter; 
+              undetermined = '';
+              previousLastLetter = currentLetter;
+            }
+            else {
+              writeNepali(previousContent + undetermined + currentLetter);
+              undetermined = '';
+              previousLetter = '';
+              previousLastLetter = '';
+              // do nothing for now.. do not display anything              
+            }
           }
         }
         else {
@@ -308,7 +329,6 @@ function LipiTransliterate () {
             undetermined = undetermined + currentLetter;
             previousLetter = undetermined;
             previousLastLetter = currentLetter;
-
           }
           else {
             if ((currentLetter == previousLastLetter) && (currentLetter == 'r')) {
@@ -318,10 +338,22 @@ function LipiTransliterate () {
               rCount+=1;
               halfLetterWithR = halfLetterWithR; // keep it same
             }
-            else if (undetermined == 'y' && currentLetter == 'n') {
-              undetermined = undetermined + currentLetter;
-              previousLetter = undetermined;
-              previousLastLetter = undetermined;              
+            else if (previousLastLetter == 'y' && currentLetter == 'n') {
+              if (previousLastLetter == previousLetter) {
+                undetermined = undetermined + currentLetter;
+                previousLetter = undetermined;
+                previousLastLetter = undetermined;                
+              }
+              else {
+                var YnPos = (undetermined.search('gy') > -1)? undetermined.search('gy') : undetermined.search('y');
+                var prevLetterEng = previousLetter.substring(0, YnPos);
+                returnValue = consonants2[prevLetterEng] + diacriticals['\\'];
+
+                writeNepali(previousContent + returnValue);
+                undetermined = previousLetter.substring(YnPos, previousLetter.length) + currentLetter;
+                previousLetter = undetermined;
+                previousLastLetter = undetermined;      
+              }
             }
             else {
               var halfLetter = undetermined;
