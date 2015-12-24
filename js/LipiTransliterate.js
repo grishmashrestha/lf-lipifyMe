@@ -423,7 +423,7 @@ function LipiTransliterate () {
                   previousLetterLength = previousLetter.length; //for kaa
                 }
                 else if (previousLastLetter == currentLetter) {
-                  previousLetterLength = previousLetter.length - 1;
+                  previousLetterLength = consonants[previousLetter].length || (previousLetter.length - 1);
                 }
                 else {
                   previousLetterLength = 1; //for ka
