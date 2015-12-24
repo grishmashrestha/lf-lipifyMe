@@ -161,6 +161,7 @@ function LipiTransliterate () {
 
   this.init = function() {
     startTransliterate();
+    listenForBackspaceAndDelete();
   }
 
   var startTransliterate = function() {
@@ -170,16 +171,31 @@ function LipiTransliterate () {
       var previousContent = nepali.value;
       var returnValue;
 
-
       var KeyID = event.keyCode;
-      switch(KeyID)
-      {
-        case 8:
-        alert("backspace");
-        break; 
-
+      switch(KeyID) {
         case 13:
         completeLetterIfNotComplete();
+        break;
+
+        default:
+        transliterate(letter, currentLetter, previousContent, returnValue);
+        break;
+      }
+    });
+  }
+
+  var listenForBackspaceAndDelete = function() {
+    english.addEventListener("keydown", function(){
+      var letter = String.fromCharCode(event.keyCode);
+      var currentLetter = letter; // for cross checking
+      var previousContent = nepali.value;
+      var returnValue;
+
+      var KeyID = event.keyCode;
+      switch(KeyID) {
+        case 8:
+        debugger
+        alert("backspace");
         break;
 
         case 46:
@@ -187,7 +203,6 @@ function LipiTransliterate () {
         break;
 
         default:
-        transliterate(letter, currentLetter, previousContent, returnValue);
         break;
       }
     });
@@ -498,9 +513,9 @@ function LipiTransliterate () {
 
             previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
             writeNepali(previousContent + returnValue);
-            setLetterInfo('', letter, '');
+            setLetterInfo('', previousLetter + currentLetter, '');
             // undetermined = '';
-            // previousLetter = letter;
+            // previousLetter = previousLetter + currentLetter;
             // previousLastLetter = '';
           }
           else {
