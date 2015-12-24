@@ -161,7 +161,7 @@ function LipiTransliterate () {
 
   this.init = function() {
     startTransliterate();
-    listenForBackspace();
+    listenForBackspaceDeleteEnter();
   }
 
   var startTransliterate = function() {
@@ -546,18 +546,25 @@ function LipiTransliterate () {
     });
   }
 
-  var listenForBackspace = function() {
+  var listenForBackspaceDeleteEnter = function() {
     english.addEventListener("keydown", function(){
       var letter = String.fromCharCode(event.keyCode);
       var KeyID = event.keyCode;
       switch(KeyID)
       {
         case 8:
+        // debugger
         alert("backspace");
         break; 
+
+        // case 13:
+        // debugger
+        // break;
+
         case 46:
         alert("delete");
         break;
+
         default:
         break;
       }
