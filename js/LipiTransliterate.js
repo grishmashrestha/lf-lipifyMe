@@ -157,8 +157,8 @@ function LipiTransliterate () {
   var rCount=0;
   var previousContentForAtOnce;
 
-  var english = document.getElementsByClassName('transliterateThis')[0];
-  var nepali = document.getElementsByClassName('nepali')[0];
+  var english = document.getElementById('transliterateThis');
+  var nepali = document.getElementById('nepali');
 
   this.init = function() {
     startTransliterate();
@@ -166,8 +166,8 @@ function LipiTransliterate () {
   }
 
   var startTransliterate = function() {
-    english.addEventListener("keypress", function(){
-      var letter = String.fromCharCode(event.keyCode);
+    english.addEventListener("keypress", function(event){
+      var letter = String.fromCharCode(event.charCode);
       var currentLetter = letter; // for cross checking
       var previousContent = nepali.value;
       var returnValue;
@@ -182,12 +182,12 @@ function LipiTransliterate () {
         transliterate(letter, currentLetter, previousContent, returnValue);
         break;
       }
-    });
+    }, false);
   }
 
   var listenForBackspaceAndDelete = function() {
-    english.addEventListener("keydown", function(){
-      var letter = String.fromCharCode(event.keyCode);
+    english.addEventListener("keydown", function(event){
+      var letter = String.fromCharCode(event.charCode);
       var currentLetter = letter; // for cross checking
       var previousContent = nepali.value;
       var returnValue;
@@ -205,7 +205,7 @@ function LipiTransliterate () {
         default:
         break;
       }
-    });
+    }, false);
   }
 
   var transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
