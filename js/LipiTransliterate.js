@@ -155,6 +155,7 @@ function LipiTransliterate () {
   var previousLastLetter;
   var halfLetterWithR;
   var rCount=0;
+  var previousContentForAtOnce;
 
   var english = document.getElementsByClassName('transliterateThis')[0];
   var nepali = document.getElementsByClassName('nepali')[0];
@@ -194,7 +195,6 @@ function LipiTransliterate () {
       var KeyID = event.keyCode;
       switch(KeyID) {
         case 8:
-        debugger
         alert("backspace");
         break;
 
@@ -213,7 +213,7 @@ function LipiTransliterate () {
     var currentLetter = currentLetterVal;
     var previousContent = previousContentVal;
     var returnValue = returnValueVal;
-    
+
     if (undetermined) {
         if (isVowel(currentLetter)) {
           var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
@@ -222,29 +222,24 @@ function LipiTransliterate () {
             var letter = halfLetterWithR.substring(0, 1);
             returnValue = letter + diacriticals['rri'];
             previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', returnValue, currentLetter, '');
-            // previousLetter = returnValue;
-            // previousLastLetter = currentLetter;
-            // undetermined ='';
-            // halfLetterWithR = '';
             rCount = 0;
           }
           else if ((halfLetterWithR) && (currentLetter == 'e') && (previousLastLetter == 'r') && (rCount == 2)) {
             var letter = halfLetterWithR.substring(0, 1);  
             returnValue = letter + diacriticals['rre'];
             previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', returnValue, currentLetter, '');
-            // undetermined ='';
-            // previousLetter = returnValue;
-            // previousLastLetter = currentLetter;
-            // halfLetterWithR = '';
             rCount = 0;
           }
           else if (((currentLetter == 'i') || (currentLetter == 'e')) && (previousLetter == 'rr') && (rCount == 1)) { // for rri and rre
             letter = previousLetter + currentLetter;
             returnValue = vowels[letter];
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', letter, currentLetter);
             // undetermined ='';
@@ -268,6 +263,7 @@ function LipiTransliterate () {
             else {
               returnValue = prevLetterNep + consonants2['gyn'] + diacriticals[currentLetter];
             }
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', (undetermined + currentLetter), currentLetter);
             // undetermined = '';
@@ -297,6 +293,7 @@ function LipiTransliterate () {
               }
             }
 
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', letter, currentLetter);
             // undetermined ='';
@@ -309,6 +306,7 @@ function LipiTransliterate () {
           letter = undetermined;
           returnValue = consonants2[letter];
           if (returnValue) {
+            previousContentForAtOnce = previousContent + returnValue + currentLetter;
             writeNepali(previousContent + returnValue + currentLetter);
             setLetterInfo('', letter, currentLetter);
             // undetermined ='';
@@ -329,6 +327,7 @@ function LipiTransliterate () {
               }
 
               returnValue = prevLetterNep + consonants2['gyn'] + space[currentLetter];
+              previousContentForAtOnce = previousContent + returnValue;
               writeNepali(previousContent + returnValue);
               setLetterInfo('', (undetermined + currentLetter), currentLetter);
               // undetermined = '';
@@ -339,6 +338,7 @@ function LipiTransliterate () {
               // do nothing for now.. do not display anything
               // shows undetermined words in english
               // needs fixing
+              previousContentForAtOnce = previousContent + undetermined + currentLetter;
               writeNepali(previousContent + undetermined + currentLetter);
               setLetterInfo('', '', '');
               // undetermined = '';
@@ -360,6 +360,7 @@ function LipiTransliterate () {
                 var halfLetter = previousLetter;
                 returnValue = consonants2[halfLetter] + diacriticals['\\'];
                 if (returnValue) {
+                  previousContentForAtOnce = previousContent + returnValue;
                   writeNepali(previousContent + returnValue);
                   rCount=1;
                   setLetterInfo(currentLetter, currentLetter, currentLetter, returnValue);
@@ -410,6 +411,7 @@ function LipiTransliterate () {
                 var prevLetterEng = previousLetter.substring(0, YnPos);
 
                 returnValue = consonants2[prevLetterEng] + diacriticals['\\'];
+                previousContentForAtOnce = previousContent + returnValue;
                 writeNepali(previousContent + returnValue);
                 undetermined = previousLetter.substring(YnPos, previousLetter.length) + currentLetter;
                 setLetterInfo(undetermined, undetermined, undetermined);
@@ -429,6 +431,7 @@ function LipiTransliterate () {
                 else {
                   undetermined = currentLetter;                  
                 }
+                previousContentForAtOnce = previousContent + returnValue;
                 writeNepali(previousContent + returnValue);
                 setLetterInfo(undetermined, currentLetter, currentLetter, '');
                 // previousLastLetter = currentLetter;
@@ -512,6 +515,7 @@ function LipiTransliterate () {
             }
 
             previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', previousLetter + currentLetter, '');
             // undetermined = '';
@@ -522,6 +526,7 @@ function LipiTransliterate () {
             if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'u') { //for uu -> उउ
               returnValue = vowels[currentLetter];
               letter = currentLetter;
+              previousContentForAtOnce = previousContent + returnValue;
               writeNepali(previousContent + returnValue);
               setLetterInfo('', letter, currentLetter);
               // undetermined = '';
@@ -532,6 +537,7 @@ function LipiTransliterate () {
               // for occurrences such as oe, uo, ae, ea, etc where combination of two vowels do not form any diacriticals
               returnValue = vowels[currentLetter];
               letter = currentLetter;
+              previousContentForAtOnce = previousContent + returnValue;
               writeNepali(previousContent + returnValue);
               setLetterInfo('', letter, currentLetter);
               // undetermined = '';
@@ -541,6 +547,7 @@ function LipiTransliterate () {
             else {
               returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
               if (returnValue) {
+                previousContentForAtOnce = previousContent + returnValue;
                 writeNepali(previousContent + returnValue);
                 setLetterInfo('', letter, currentLetter);
                 // undetermined = '';
@@ -557,6 +564,7 @@ function LipiTransliterate () {
         else {
           returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
           if (returnValue) {
+            previousContentForAtOnce = previousContent + returnValue;
             writeNepali(previousContent + returnValue);
             setLetterInfo('', letter, currentLetter);
             // undetermined = '';
@@ -572,6 +580,7 @@ function LipiTransliterate () {
       else {
         returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
         if (returnValue) {
+          previousContentForAtOnce = previousContent + returnValue;
           writeNepali(previousContent + returnValue);
           setLetterInfo('', letter, currentLetter);
           // undetermined = '';
@@ -586,6 +595,21 @@ function LipiTransliterate () {
         }           
       }
     }
+    if (returnValue) {
+      return returnValue      
+    }
+  }
+
+  this.transliterateAtOnce = function(inputString) {
+    var letter, currentLetter, previousContent, returnValue;
+    previousContentForAtOnce = '';
+
+    for (var i = 0; i < inputString.length; i++) {
+      letter = inputString[i];
+      currentLetter = letter;
+      var b = transliterate(currentLetter, currentLetter, previousContentForAtOnce, returnValue);
+    };
+    return previousContentForAtOnce;
   }
 
   var writeNepali = function(val) {
@@ -623,6 +647,7 @@ function LipiTransliterate () {
     letter = undetermined;
     returnValue = consonants2[letter];
     if (returnValue) {
+      previousContentForAtOnce = previousContent + returnValue + currentLetter;
       writeNepali(previousContent + returnValue + currentLetter);
       setLetterInfo('', '', '');
     }
@@ -640,6 +665,7 @@ function LipiTransliterate () {
         }
 
         returnValue = prevLetterNep + consonants2['gyn'] + space[currentLetter];
+        previousContentForAtOnce = previousContent + returnValue;
         writeNepali(previousContent + returnValue);
         setLetterInfo('', '', '');
       }
@@ -647,9 +673,11 @@ function LipiTransliterate () {
         // do nothing for now.. do not display anything
         // shows undetermined words in english
         // needs fixing
+        previousContentForAtOnce =previousContent + undetermined + currentLetter;
         writeNepali(previousContent + undetermined + currentLetter);
         setLetterInfo('', '', '');
       }
     }
   }
+
 }
