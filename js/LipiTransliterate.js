@@ -335,7 +335,7 @@ function LipiTransliterate () {
             if (consonants2[undetermined]) { // if undetermined + currentLetter combo will generate a full letter on next iteration
               setLetterInfo(undetermined, undetermined, currentLetter);
             }
-            else { // if undetermined + currentLetter do not form a letter on next iteration such as g+r unlike ch+h
+            else { // if undetermined + currentLetter do not form a letter on next iteration such as g+r & k+s unlike ch+h
               if (currentLetter == 'r') {
                 var halfLetter = previousLetter;
                 returnValue = consonants2[halfLetter] + diacriticals['\\'];
@@ -350,8 +350,22 @@ function LipiTransliterate () {
                   setLetterInfo(undetermined);
                 }
               }
+              else if (previousLetter == 'k' && currentLetter == 's') {
+                setLetterInfo(undetermined, undetermined, currentLetter);
+              }
+              else if (previousLetter == 'g' && currentLetter == 'y') {
+                setLetterInfo(undetermined, undetermined, currentLetter);
+              }
               else {
-                setLetterInfo((previousLetter + currentLetter), undetermined, currentLetter);
+                if (consonants2[previousLetter]) {
+                  returnValue = consonants2[previousLetter] + diacriticals['\\'];
+                  previousContentForAtOnce = previousContent + returnValue;
+                  writeNepali(previousContentForAtOnce);
+                  setLetterInfo(currentLetter, currentLetter, currentLetter);
+                }
+                else {
+                  setLetterInfo((previousLetter + currentLetter), undetermined, currentLetter);                  
+                }
               }
             } 
           }
@@ -375,17 +389,23 @@ function LipiTransliterate () {
               else {
                 var YnPos = (undetermined.search('gy') > -1)? undetermined.search('gy') : undetermined.search('y');
                 var prevLetterEng = previousLetter.substring(0, YnPos);
-
-                returnValue = consonants2[prevLetterEng] + diacriticals['\\'];
-                previousContentForAtOnce = previousContent + returnValue;
-                writeNepali(previousContent + returnValue);
-                undetermined = previousLetter.substring(YnPos, previousLetter.length) + currentLetter;
-                setLetterInfo(undetermined, undetermined, undetermined);
+                if (consonants2[prevLetterEng]) {
+                  returnValue = consonants2[prevLetterEng] + diacriticals['\\'];
+                  previousContentForAtOnce = previousContent + returnValue;
+                  writeNepali(previousContent + returnValue);
+                  undetermined = previousLetter.substring(YnPos, previousLetter.length) + currentLetter;
+                  setLetterInfo(undetermined, undetermined, undetermined);                  
+                }
+                else {
+                  undetermined = undetermined + currentLetter;
+                  setLetterInfo(undetermined, undetermined, currentLetter);
+                }
               }
             }
             else {
               var halfLetter = undetermined;
               returnValue = consonants2[halfLetter] + diacriticals['\\'];
+              
               if (returnValue && consonants2[halfLetter]) {
                 var isNumOrSpace =  numerals[currentLetter] || space[currentLetter];
                 if (isNumOrSpace) {
@@ -395,6 +415,10 @@ function LipiTransliterate () {
                 else {
                   undetermined = currentLetter;                  
                 }
+
+                currentLetter = currentLetter == '\\'? '' : currentLetter;
+                undetermined = undetermined == '\\'? '' : undetermined;
+
                 previousContentForAtOnce = previousContent + returnValue;
                 writeNepali(previousContent + returnValue);
                 setLetterInfo(undetermined, currentLetter, currentLetter, '');
@@ -467,6 +491,14 @@ function LipiTransliterate () {
                   previousLetterLength = returnValue.length;                    
                 }
               }
+              else if ((previousLastLetter == currentLetter) && (previousLastLetter == '*')) {
+                if (previousLetter.length > 2) {
+                  previousLetterLength = previousLetter.length; -1;                  
+                }
+                else {
+                  previousLetterLength =  previousLetter.length;
+                }
+              }              
               else {
                 previousLetterLength = previousLetter.length;                  
               }
