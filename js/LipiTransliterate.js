@@ -175,6 +175,7 @@ function LipiTransliterate () {
       var KeyID = event.keyCode;
       switch(KeyID) {
         case 13:
+        // enter
         completeLetterIfNotComplete();
         break;
 
@@ -186,7 +187,7 @@ function LipiTransliterate () {
   }
 
   var listenForBackspaceAndDelete = function() {
-    english.addEventListener("keydown", function(event){
+    english.addEventListener("keyup", function(event){
       var letter = String.fromCharCode(event.charCode);
       var currentLetter = letter; // for cross checking
       var previousContent = nepali.value;
@@ -195,11 +196,35 @@ function LipiTransliterate () {
       var KeyID = event.keyCode;
       switch(KeyID) {
         case 8:
-        alert("backspace");
+        // backspace
+        if (english.value) {
+          setLetterInfo('', '','','');
+          returnedVal = transliterateAtOnce(english.value);
+          if (!returnedVal) {
+            nepali.value = '';
+          }
+        }
+        else
+        {
+          nepali.value = '';
+          setLetterInfo('', '','','');
+        }
         break;
 
         case 46:
-        alert("delete");
+        // delete key
+        if (english.value) {
+          setLetterInfo('', '','','');
+          returnedVal = transliterateAtOnce(english.value);
+          if (!returnedVal) {
+            nepali.value = '';
+          }
+        }
+        else
+        {
+          nepali.value = '';
+          setLetterInfo('', '','','');
+        };
         break;
 
         default:
@@ -579,6 +604,8 @@ function LipiTransliterate () {
     };
     return previousContentForAtOnce;
   }
+
+  var transliterateAtOnce = this.transliterateAtOnce; // so that transliterateAtOnce can be reused within this class
 
   var writeNepali = function(val) {
     nepali.value = val;
