@@ -168,21 +168,29 @@ function LipiTransliterate () {
   var startTransliterate = function() {
     english.addEventListener("keypress", function(event){
       var letter = String.fromCharCode(event.charCode);
-      var currentLetter = letter; // for cross checking
-      var previousContent = nepali.value;
-      var returnValue;
-
-      var KeyID = event.keyCode;
-      switch(KeyID) {
-        case 13:
-        // enter
-        completeLetterIfNotComplete(letter);
-        break;
-
-        default:
-        transliterate(letter, currentLetter, previousContent, returnValue);
-        break;
+      if (event.currentTarget.selectionStart < english.value.length) {
+        eigoFirst = english.value.substring(0, event.currentTarget.selectionStart);
+        eigoSecond = english.value.substring(event.currentTarget.selectionStart, english.value.length);
+        inputString = eigoFirst + letter + eigoSecond;
+        transliterateAtOnce(inputString);
       }
+      else {
+        var currentLetter = letter; // for cross checking
+        var previousContent = nepali.value;
+        var returnValue;
+
+        var KeyID = event.keyCode;
+        switch(KeyID) {
+          case 13:
+          // enter
+          completeLetterIfNotComplete(letter);
+          break;
+
+          default:
+          transliterate(letter, currentLetter, previousContent, returnValue);
+          break;
+        }
+      }      
     }, false);
   }
 
