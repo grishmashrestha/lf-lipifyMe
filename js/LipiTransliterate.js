@@ -16,7 +16,8 @@ function LipiTransliterate () {
     "rri":"ऋ",
     "rre":"ॠ",
     "*":"ं",
-    "**":"ँ"
+    "**":"ँ",
+    ":":"ः"
   };
 
   var numerals = {
@@ -140,10 +141,9 @@ function LipiTransliterate () {
     "ra":"्र",
     "a**":"ँ",
     "\\":"्",
-    "a\\":"्",
     "rri":"ृ",
     "rre":"ॄ",
-    "ah":" ः"
+    ":":" ः"
   };
 
   var space = {
