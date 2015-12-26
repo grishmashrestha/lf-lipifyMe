@@ -2,7 +2,7 @@ var transliterator = new LipiTransliterate();
 transliterator.init();
 
 // var transliterator2 = new LipiTransliterate();
-// var a = transliterator2.transliterateAtOnce('namaste');
+// var a = transliterator2.transliterateAtOnce('raam\nke chha');
 // alert(a);
 
 

@@ -176,7 +176,7 @@ function LipiTransliterate () {
       switch(KeyID) {
         case 13:
         // enter
-        completeLetterIfNotComplete();
+        completeLetterIfNotComplete(letter);
         break;
 
         default:
@@ -600,7 +600,12 @@ function LipiTransliterate () {
     for (var i = 0; i < inputString.length; i++) {
       letter = inputString[i];
       currentLetter = letter;
-      var b = transliterate(currentLetter, currentLetter, previousContentForAtOnce, returnValue);
+      if (currentLetter == '\n') {
+        completeLetterIfNotComplete(letter);
+      }
+      else {
+        transliterate(currentLetter, currentLetter, previousContentForAtOnce, returnValue);        
+      } 
     };
     return previousContentForAtOnce;
   }
@@ -634,8 +639,8 @@ function LipiTransliterate () {
     halfLetterWithR = halfLetterWithRVal;
   }
 
-  var completeLetterIfNotComplete = function() {
-    var letter = String.fromCharCode(event.keyCode);
+  var completeLetterIfNotComplete = function(letter) {
+    // var letter = String.fromCharCode(event.keyCode);
     var currentLetter = letter; // for cross checking
     var previousContent = nepali.value;
     var returnValue;
