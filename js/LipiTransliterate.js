@@ -214,40 +214,32 @@ function LipiTransliterate () {
       switch(KeyID) {
         case 8:
         // backspace
-        if (english.value) {
-          setLetterInfo('', '','','');
-          returnedVal = transliterateAtOnce(english.value);
-          if (!returnedVal) {
-            nepali.value = '';
-          }
-        }
-        else
-        {
-          nepali.value = '';
-          setLetterInfo('', '','','');
-        }
+        deleteAfterBackspaceOrDelete();
         break;
 
         case 46:
         // delete key
-        if (english.value) {
-          setLetterInfo('', '','','');
-          returnedVal = transliterateAtOnce(english.value);
-          if (!returnedVal) {
-            nepali.value = '';
-          }
-        }
-        else
-        {
-          nepali.value = '';
-          setLetterInfo('', '','','');
-        };
+        deleteAfterBackspaceOrDelete();
         break;
 
         default:
         break;
       }
     }, false);
+  }
+
+  var deleteAfterBackspaceOrDelete = function() {
+    if (english.value) {
+      setLetterInfo('', '','','');
+      returnedVal = transliterateAtOnce(english.value);
+      if (!returnedVal) {
+        nepali.value = '';
+      }
+    }
+    else {
+      nepali.value = '';
+      setLetterInfo('', '','','');
+    }
   }
 
   var transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
