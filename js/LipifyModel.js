@@ -166,13 +166,6 @@ function LipifyModel () {
     listenForPastingEvent();
   }
 
-  var listenForPastingEvent = function() {
-    english.addEventListener("paste",function(event){
-      var text = event.clipboardData.getData("text/plain");
-       (transliterateAtOnce(text));
-    });
-  }
-
   var startTransliterate = function() {
     english.addEventListener("keypress", function(event){
       var letter = String.fromCharCode(event.charCode);
@@ -190,7 +183,6 @@ function LipifyModel () {
 
         var KeyID = event.keyCode;
 
-
         switch(KeyID) {
           case 13:
           // enter
@@ -205,159 +197,136 @@ function LipifyModel () {
     }, false);
   }
 
-  var listenForBackspaceAndDelete = function() {
-    english.addEventListener("keyup", function(event){
-      var letter = String.fromCharCode(event.charCode);
-      var currentLetter = letter; // for cross checking
-      var previousContent = nepali.value;
-      var returnValue;
-
-      var KeyID = event.keyCode;
-      switch(KeyID) {
-        case 8:
-        // backspace
-        deleteAfterBackspaceOrDelete();
-        break;
-
-        case 46:
-        // delete key
-        deleteAfterBackspaceOrDelete();
-        break;
-
-        default:
-        break;
-      }
-    }, false);
-  }
-
-  var deleteAfterBackspaceOrDelete = function() {
+  this.deleteAfterBackspaceOrDelete = function() {
+    var returnedVal;
     if (english.value) {
       setLetterInfo('', '','','');
       returnedVal = transliterateAtOnce(english.value);
-      if (!returnedVal) {
-        nepali.value = '';
-      }
     }
     else {
-      nepali.value = '';
       setLetterInfo('', '','','');
+    }
+    if (returnedVal) {
+      return returnedVal;      
+    }
+    else {
+      return false;
     }
   }
 
-  var transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
+  this.transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
     var letter = letterVal;
     var currentLetter = currentLetterVal;
     var previousContent = previousContentVal;
     var returnValue = returnValueVal;
 
     if (undetermined) {
-      returnValue = transliterateForUndeterminedLetter(letter, currentLetter, previousContent, returnValue);
+      returnValue = transliterateForUndeterminedLetter(letter, currentLetter, previousContentForAtOnce, returnValue);
     }
     else {
-      returnValue = transliterateForNewLetter(letter, currentLetter, previousContent, returnValue);
+      returnValue = transliterateForNewLetter(letter, currentLetter, previousContentForAtOnce, returnValue);
     }
-
     if (returnValue) {
       return returnValue      
     }
   }
 
+  var transliterate = this.transliterate;
+
   var transliterateForUndeterminedLetter = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
     var letter = letterVal;
     var currentLetter = currentLetterVal;
-    var previousContent = previousContentVal;
+    var previousContent = previousContentVal || '';
     var returnValue = returnValueVal;
 
     if (isVowel(currentLetter)) {
-          var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
+      var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
 
-          if ((halfLetterWithR) && (currentLetter == 'i') && (previousLastLetter == 'r') && (rCount == 2)) {
-            var letter = halfLetterWithR.substring(0, 1);
-            returnValue = letter + diacriticals['rri'];
-            previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
-            previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
-            setLetterInfo('', returnValue, currentLetter, '');
-            rCount = 0;
+      if ((halfLetterWithR) && (currentLetter == 'i') && (previousLastLetter == 'r') && (rCount == 2)) {
+        var letter = halfLetterWithR.substring(0, 1);
+        returnValue = letter + diacriticals['rri'];
+        previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+        previousContentForAtOnce = previousContent + returnValue;
+        // writeNepali(previousContent + returnValue);
+        setLetterInfo('', returnValue, currentLetter, '');
+        rCount = 0;
+      }
+      else if ((halfLetterWithR) && (currentLetter == 'e') && (previousLastLetter == 'r') && (rCount == 2)) {
+        var letter = halfLetterWithR.substring(0, 1);  
+        returnValue = letter + diacriticals['rre'];
+        previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
+        previousContentForAtOnce = previousContent + returnValue;
+        // writeNepali(previousContent + returnValue);
+        setLetterInfo('', returnValue, currentLetter, '');
+        rCount = 0;
+      }
+      else if (((currentLetter == 'i') || (currentLetter == 'e')) && (previousLetter == 'rr') && (rCount == 1)) { // for rri and rre
+        letter = previousLetter + currentLetter;
+        returnValue = vowels[letter];
+        previousContentForAtOnce = previousContent + returnValue;
+        // writeNepali(previousContent + returnValue);
+        setLetterInfo('', letter, currentLetter);
+        rCount = 0;
+      }
+      else if (isGyn > -1) {
+        // if gyn is present 
+        var firstHalfLetterGyn = undetermined.substring(0, isGyn);
+        var prevLetterNep;
+        if (firstHalfLetterGyn) {
+          prevLetterNep = consonants2[firstHalfLetterGyn] +  diacriticals['\\'];
+        }
+        else {
+          prevLetterNep = '';
+        }
+        if (currentLetter == 'a') {
+          returnValue = prevLetterNep + consonants['gyna'];
+        }
+        else {
+          returnValue = prevLetterNep + consonants2['gyn'] + diacriticals[currentLetter];
+        }
+        previousContentForAtOnce = previousContent + returnValue;
+        // writeNepali(previousContent + returnValue);
+        setLetterInfo('', (undetermined + currentLetter), currentLetter);
+      }
+      else {
+        letter = undetermined + currentLetter;
+        if (currentLetter == 'a') {
+          if (consonants[letter]) {
+            returnValue = consonants[letter];                
           }
-          else if ((halfLetterWithR) && (currentLetter == 'e') && (previousLastLetter == 'r') && (rCount == 2)) {
-            var letter = halfLetterWithR.substring(0, 1);  
-            returnValue = letter + diacriticals['rre'];
-            previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
-            previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
-            setLetterInfo('', returnValue, currentLetter, '');
-            rCount = 0;
-          }
-          else if (((currentLetter == 'i') || (currentLetter == 'e')) && (previousLetter == 'rr') && (rCount == 1)) { // for rri and rre
-            letter = previousLetter + currentLetter;
-            returnValue = vowels[letter];
-            previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
-            setLetterInfo('', letter, currentLetter);
-            rCount = 0;
-          }
-          else if (isGyn > -1) {
-            // if gyn is present 
-            var firstHalfLetterGyn = undetermined.substring(0, isGyn);
-            var prevLetterNep;
-            if (firstHalfLetterGyn) {
-              prevLetterNep = consonants2[firstHalfLetterGyn] +  diacriticals['\\'];
+          else {
+            var firstHalfLetterYPos = undetermined.search('y');
+            var firstHalfLetterY = undetermined.substring(0, firstHalfLetterYPos);
+            
+            if (consonants2[firstHalfLetterY]) {
+              returnValue = consonants2[firstHalfLetterY] + diacriticals['\\'] + consonants[previousLastLetter + currentLetter];
+              letter = previousLastLetter + currentLetter;
             }
             else {
-              prevLetterNep = '';
+              if (consonants2[previousLastLetter]) {
+                undetermined = undetermined.substring(0, undetermined.length-1);
+                returnValue = undetermined + consonants[previousLastLetter + currentLetter];                    
+                letter = previousLastLetter + currentLetter;
+              }
+              else {
+                returnValue = undetermined + vowels[currentLetter];
+                letter = currentLetter;
+              }
             }
-            if (currentLetter == 'a') {
-              returnValue = prevLetterNep + consonants['gyna'];
-            }
-            else {
-              returnValue = prevLetterNep + consonants2['gyn'] + diacriticals[currentLetter];
-            }
-            previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
-            setLetterInfo('', (undetermined + currentLetter), currentLetter);
+          }
+        }
+        else {
+          if (consonants2[undetermined]) {
+            returnValue = consonants2[undetermined] + diacriticals[currentLetter];                            
           }
           else {
             letter = undetermined + currentLetter;
-            if (currentLetter == 'a') {
-              if (consonants[letter]) {
-                returnValue = consonants[letter];                
-              }
-              else {
-                var firstHalfLetterYPos = undetermined.search('y');
-                var firstHalfLetterY = undetermined.substring(0, firstHalfLetterYPos);
-                
-                if (consonants2[firstHalfLetterY]) {
-                  returnValue = consonants2[firstHalfLetterY] + diacriticals['\\'] + consonants[previousLastLetter + currentLetter];
-                  letter = previousLastLetter + currentLetter;
-                }
-                else {
-                  if (consonants2[previousLastLetter]) {
-                    undetermined = undetermined.substring(0, undetermined.length-1);
-                    returnValue = undetermined + consonants[previousLastLetter + currentLetter];                    
-                    letter = previousLastLetter + currentLetter;
-                  }
-                  else {
-                    returnValue = undetermined + vowels[currentLetter];
-                    letter = currentLetter;
-                  }
-                }
-              }
-            }
-            else {
-              if (consonants2[undetermined]) {
-                returnValue = consonants2[undetermined] + diacriticals[currentLetter];                            
-              }
-              else {
-                letter = undetermined + currentLetter;
-                returnValue = letter;
-              }
-            }
-
-            previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
-            setLetterInfo('', letter, currentLetter);
+            returnValue = letter;
           }
+        }
+        previousContentForAtOnce = (previousContent) + returnValue;
+        setLetterInfo('', letter, currentLetter);
+      }
     }
     else if (isSpace(currentLetter)) {
       // for space, complete the letter
@@ -497,13 +466,13 @@ function LipifyModel () {
       }
     }
 
-    return returnValue;
+    return previousContentForAtOnce;
   }
 
   var transliterateForNewLetter = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
     var letter = letterVal;
     var currentLetter = currentLetterVal;
-    var previousContent = previousContentVal;
+    var previousContent = previousContentVal || '';
     var returnValue = returnValueVal;
     if (isVowel(currentLetter)) {
         if (isVowel(previousLastLetter)) {
@@ -521,11 +490,9 @@ function LipifyModel () {
               }
             }
             else {
-
               if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'e') { //for ee -> एए
                 returnValue = vowels[previousLastLetter] + vowels[currentLetter];
                 letter = currentLetter;
-
               }
               else {
                 var newLetter = previousLetter.substring(0, previousLetter.length-1);
@@ -575,12 +542,10 @@ function LipifyModel () {
               else {
                 previousLetterLength = previousLetter.length;                  
               }
-
             }
 
             previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
             previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
             setLetterInfo('', previousLetter + currentLetter, '');
           }
           else {
@@ -588,7 +553,6 @@ function LipifyModel () {
               returnValue = vowels[currentLetter];
               letter = currentLetter;
               previousContentForAtOnce = previousContent + returnValue;
-              // writeNepali(previousContent + returnValue);
               setLetterInfo('', letter, currentLetter);
             }
             else if ((previousLastLetter != currentLetter) || currentLetter == 'u') {
@@ -596,14 +560,12 @@ function LipifyModel () {
               returnValue = vowels[currentLetter];
               letter = currentLetter;
               previousContentForAtOnce = previousContent + returnValue;
-              // writeNepali(previousContent + returnValue);
               setLetterInfo('', letter, currentLetter);
             }
             else {
               returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
               if (returnValue) {
                 previousContentForAtOnce = previousContent + returnValue;
-                // writeNepali(previousContent + returnValue);
                 setLetterInfo('', letter, currentLetter);
               }
               else {
@@ -616,7 +578,6 @@ function LipifyModel () {
           returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
           if (returnValue) {
             previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
             setLetterInfo('', letter, currentLetter);
           }
           else {
@@ -628,7 +589,6 @@ function LipifyModel () {
       returnValue = vowels[letter] || numerals[letter] || consonants[letter] || diacriticals[letter] || space[letter];
       if (returnValue) {
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', letter, currentLetter);
       }
       else {
@@ -636,7 +596,7 @@ function LipifyModel () {
       }           
     }
 
-    return returnValue;
+    return previousContentForAtOnce;
   }
 
   this.transliterateAtOnce = function(inputString) {
@@ -655,7 +615,7 @@ function LipifyModel () {
     };
     return previousContentForAtOnce;
   }
-
+  
   var transliterateAtOnce = this.transliterateAtOnce; // so that transliterateAtOnce can be reused within this class
 
   var isVowel = function(letter) {
@@ -681,15 +641,14 @@ function LipifyModel () {
     halfLetterWithR = halfLetterWithRVal;
   }
 
-  var completeLetterIfNotComplete = function(letter) {
+  this.completeLetterIfNotComplete = function(letter) {
     var currentLetter = letter; // for cross checking
-    var previousContent = nepali.value;
+    var previousContent = previousContentForAtOnce;
     var returnValue;
-    letter = undetermined;
+    var letter = undetermined;
     returnValue = consonants2[letter];
     if (returnValue) {
       previousContentForAtOnce = previousContent + returnValue + currentLetter;
-      // writeNepali(previousContent + returnValue + currentLetter);
       setLetterInfo('', '', '');
     }
     else {
@@ -707,16 +666,17 @@ function LipifyModel () {
 
         returnValue = prevLetterNep + consonants2['gyn'] + space[currentLetter];
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', '', '');
       }
       else {
         // shows undetermined words in english
         previousContentForAtOnce = previousContent + undetermined + currentLetter;
-        // writeNepali(previousContent + undetermined + currentLetter);
         setLetterInfo('', '', '');
       }
     }
+
+    return previousContentForAtOnce;
   }
+  var completeLetterIfNotComplete = this.completeLetterIfNotComplete;
 
 }
