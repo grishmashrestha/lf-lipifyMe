@@ -21,7 +21,7 @@ function LipifyMe () {
   var transliterator = function() {
     // startTransliterate();
     // listenForBackspaceAndDelete();
-    // listenForPaste();
+    listenForPaste();
   }
 
   var startTransliterate = function() {
@@ -33,11 +33,11 @@ function LipifyMe () {
   }
 
   var listenForPaste = function() {
-    // english.addEventListener("paste",function(event){
-    //   var text = event.clipboardData.getData("text/plain");
-    //   var nepaliValue = lipify.transliterateAtOnce(text);
-    //   write.writeNepali(nepaliValue);
-    // });
+    english.addEventListener("paste",function(event){
+      var text = event.clipboardData.getData("text/plain");
+      var nepaliValue = lipify.transliterateAtOnce(text);
+      write.writeNepali(nepaliValue);
+    });
   }
 }
 
