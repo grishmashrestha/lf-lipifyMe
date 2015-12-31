@@ -3,16 +3,17 @@
 <html>
   <head>
     <title>Transliterate</title>
-    <link rel="stylesheet" type="text/css" href="css/layout.css">
-    <meta charset="UTF-8">
+    <link rel='stylesheet' type='text/css' href='css/layout.css'>
+    <meta charset='UTF-8'>
   </head>
   <body>
-    <div class="container">
-      <textarea id="transliterateThis" rows="4" cols="50" placeholder="enter something nepali in roman"  autofocus></textarea>
-      <textarea id="nepali" rows="4" cols="50" placeholder=""></textarea>
+    <div class='container'>
+      <div id='lipifyMe'>
+      </div>
     </div>
-    <!-- <button class='btn'>Test</button> -->
-    <script type="text/javascript" src='js/LipiTransliterate.js'></script>
-    <script type="text/javascript" src='js/characterMap.js'></script>
+
+    <script type='text/javascript' src='js/LipifyModel.js'></script>
+    <script type='text/javascript' src='js/LipifyToView.js'></script>
+    <script type='text/javascript' src='js/lipifyMe.js'></script>
   </body>
 </html>
