@@ -20,7 +20,7 @@ function LipifyMe () {
 
   var transliterator = function() {
     startTransliterate();
-    // listenForBackspaceAndDelete();
+    listenForBackspaceAndDelete();
     listenForPaste();
   }
 
@@ -44,7 +44,7 @@ function LipifyMe () {
 
         switch(KeyID) {
           case 13:
-          // enter
+          // enter key
           returnValue = lipify.completeLetterIfNotComplete(letter);
           break;
 
@@ -61,6 +61,36 @@ function LipifyMe () {
   }
 
   var listenForBackspaceAndDelete = function() {
+    english.addEventListener("keyup", function(event) {
+      var letter = String.fromCharCode(event.charCode);
+      var currentLetter = letter; // for cross checking
+      var previousContent = nepali.value;
+      var returnValue;
+
+      var KeyID = event.keyCode;
+      switch(KeyID) {
+        case 8:
+        // backspace
+        returnValue = lipify.deleteAfterBackspaceOrDelete();
+        break;
+
+        case 46:
+        // delete key
+        returnValue = lipify.deleteAfterBackspaceOrDelete();
+        break;
+
+        default:
+        break;
+      }
+
+      if (returnValue) {
+        write.writeNepali(returnValue);        
+      }
+      else if (returnValue == false){
+        write.writeNepali('');
+      }
+
+    }, false);
 
   }
 
