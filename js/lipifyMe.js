@@ -41,10 +41,8 @@ function LipifyMe () {
 
         var KeyID = event.keyCode;
 
-
         switch(KeyID) {
-          case 13:
-          // enter key
+          case 13: // enter key
           returnValue = lipify.completeLetterIfNotComplete(letter);
           break;
 
@@ -62,9 +60,6 @@ function LipifyMe () {
 
   var listenForBackspaceAndDelete = function() {
     english.addEventListener("keyup", function(event) {
-      var letter = String.fromCharCode(event.charCode);
-      var currentLetter = letter; // for cross checking
-      var previousContent = nepali.value;
       var returnValue;
 
       var KeyID = event.keyCode;

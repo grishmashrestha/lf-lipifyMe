@@ -193,7 +193,6 @@ function LipifyModel () {
         returnValue = letter + diacriticals['rri'];
         previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', returnValue, currentLetter, '');
         rCount = 0;
       }
@@ -202,7 +201,6 @@ function LipifyModel () {
         returnValue = letter + diacriticals['rre'];
         previousContent = previousContent.substring(0, (previousContent.length - halfLetterWithR.length));
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', returnValue, currentLetter, '');
         rCount = 0;
       }
@@ -210,7 +208,6 @@ function LipifyModel () {
         letter = previousLetter + currentLetter;
         returnValue = vowels[letter];
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', letter, currentLetter);
         rCount = 0;
       }
@@ -231,7 +228,6 @@ function LipifyModel () {
           returnValue = prevLetterNep + consonants2['gyn'] + diacriticals[currentLetter];
         }
         previousContentForAtOnce = previousContent + returnValue;
-        // writeNepali(previousContent + returnValue);
         setLetterInfo('', (undetermined + currentLetter), currentLetter);
       }
       else {
@@ -280,7 +276,6 @@ function LipifyModel () {
       returnValue = consonants2[letter];
       if (returnValue) {
         previousContentForAtOnce = previousContent + returnValue + currentLetter;
-        // writeNepali(previousContent + returnValue + currentLetter);
         setLetterInfo('', letter, currentLetter);
       }
       else {
@@ -298,14 +293,11 @@ function LipifyModel () {
 
           returnValue = prevLetterNep + consonants2['gyn'] + space[currentLetter];
           previousContentForAtOnce = previousContent + returnValue;
-          // writeNepali(previousContent + returnValue);
           setLetterInfo('', (undetermined + currentLetter), currentLetter);
         }
         else {
-          // do nothing for now.. do not display anything
           // shows undetermined words in english
           previousContentForAtOnce = previousContent + undetermined + currentLetter;
-          // writeNepali(previousContent + undetermined + currentLetter);
           setLetterInfo('', '', '');
         }
       }
@@ -322,7 +314,6 @@ function LipifyModel () {
             if (consonants2[halfLetter]) {
               returnValue = consonants2[halfLetter] + diacriticals['\\'];
               previousContentForAtOnce = previousContent + returnValue;
-              // writeNepali(previousContent + returnValue);
               rCount=1;
               setLetterInfo(currentLetter, currentLetter, currentLetter, returnValue);
               // halfLetterWithR = returnValue;                   
@@ -341,7 +332,6 @@ function LipifyModel () {
             if (consonants2[previousLetter]) {
               returnValue = consonants2[previousLetter] + diacriticals['\\'];
               previousContentForAtOnce = previousContent + returnValue;
-              // writeNepali(previousContentForAtOnce);
               setLetterInfo(currentLetter, currentLetter, currentLetter);
             }
             else {
@@ -373,7 +363,6 @@ function LipifyModel () {
             if (consonants2[prevLetterEng]) {
               returnValue = consonants2[prevLetterEng] + diacriticals['\\'];
               previousContentForAtOnce = previousContent + returnValue;
-              // writeNepali(previousContent + returnValue);
               undetermined = previousLetter.substring(YnPos, previousLetter.length) + currentLetter;
               setLetterInfo(undetermined, undetermined, undetermined);                  
             }
@@ -401,7 +390,6 @@ function LipifyModel () {
             undetermined = undetermined == '\\'? '' : undetermined;
 
             previousContentForAtOnce = previousContent + returnValue;
-            // writeNepali(previousContent + returnValue);
             setLetterInfo(undetermined, currentLetter, currentLetter, '');
           }
           else {
