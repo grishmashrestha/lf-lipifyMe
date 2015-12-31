@@ -420,7 +420,9 @@ function LipifyModel () {
               }
               else {
                 var newLetter = previousLetter.substring(0, previousLetter.length-1);
-                returnValue = consonants2[newLetter] + diacriti;
+                if (consonants2[newLetter]) {
+                  returnValue = consonants2[newLetter] + diacriti;                  
+                }
               }
             }
             else {
@@ -442,45 +444,52 @@ function LipifyModel () {
                 }
               }                         
             }
-            if (previousLastLetter == 'a') {
-              if (previousLetter == previousLastLetter) {
-                previousLetterLength = previousLetter.length; //for kaa
-              }
-              else if (previousLastLetter == currentLetter) {
-                previousLetterLength = consonants[previousLetter].length || (previousLetter.length - 1);
+
+            if (returnValue) {
+              if (previousLastLetter == 'a') {
+                if (previousLetter == previousLastLetter) {
+                  previousLetterLength = previousLetter.length; //for kaa
+                }
+                else if (previousLastLetter == currentLetter) {
+                  previousLetterLength = consonants[previousLetter].length || (previousLetter.length - 1);
+                }
+                else {
+                  previousLetterLength = 1; //for ka
+                }
               }
               else {
-                previousLetterLength = 1; //for ka
+                if (['i', 'o'].indexOf(previousLastLetter) > -1) {
+                  if ((previousLastLetter == previousLetter) && (previousLetter == 'o')) {
+                    previousLetterLength = 1; // for 'oo' -> ऊ
+                  }
+                  else if ((previousLastLetter == previousLetter) && (previousLetter == 'i')) {
+                    previousLetterLength = 1; // for 'ii' -> ई
+                  }
+                  else {
+                    previousLetterLength = returnValue.length;                    
+                  }
+                }
+                else if ((previousLastLetter == currentLetter) && (previousLastLetter == '*')) {
+                  if (previousLetter.length > 2) {
+                    previousLetterLength = previousLetter.length; -1;                  
+                  }
+                  else {
+                    previousLetterLength =  previousLetter.length;
+                  }
+                }              
+                else {
+                  previousLetterLength = previousLetter.length;                  
+                }
               }
+
+              previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
+              previousContentForAtOnce = previousContent + returnValue;
+              setLetterInfo('', previousLetter + currentLetter, '');              
             }
             else {
-              if (['i', 'o'].indexOf(previousLastLetter) > -1) {
-                if ((previousLastLetter == previousLetter) && (previousLetter == 'o')) {
-                  previousLetterLength = 1; // for 'oo' -> ऊ
-                }
-                else if ((previousLastLetter == previousLetter) && (previousLetter == 'i')) {
-                  previousLetterLength = 1; // for 'ii' -> ई
-                }
-                else {
-                  previousLetterLength = returnValue.length;                    
-                }
-              }
-              else if ((previousLastLetter == currentLetter) && (previousLastLetter == '*')) {
-                if (previousLetter.length > 2) {
-                  previousLetterLength = previousLetter.length; -1;                  
-                }
-                else {
-                  previousLetterLength =  previousLetter.length;
-                }
-              }              
-              else {
-                previousLetterLength = previousLetter.length;                  
-              }
+              previousContentForAtOnce = previousContent + vowels[currentLetter];
+              setLetterInfo('', currentLetter, currentLetter); 
             }
-
-            previousContent = previousContent.substring(0, (previousContent.length-previousLetterLength));
-            previousContentForAtOnce = previousContent + returnValue;
-            setLetterInfo('', previousLetter + currentLetter, '');
           }
           else {
             if (previousLetter == previousLastLetter && currentLetter == previousLastLetter && currentLetter == 'u') { //for uu -> उउ
