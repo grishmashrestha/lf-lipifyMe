@@ -160,60 +160,6 @@ function LipifyModel () {
   var english = document.getElementById('transliterateThis');
   var nepali = document.getElementById('nepali');
 
-  this.init = function() {
-    startTransliterate();
-    listenForBackspaceAndDelete();
-    listenForPastingEvent();
-  }
-
-  var startTransliterate = function() {
-    english.addEventListener("keypress", function(event){
-      var letter = String.fromCharCode(event.charCode);
-
-      if (event.currentTarget.selectionStart < english.value.length) {
-        eigoFirst = english.value.substring(0, event.currentTarget.selectionStart);
-        eigoSecond = english.value.substring(event.currentTarget.selectionStart, english.value.length);
-        inputString = eigoFirst + letter + eigoSecond;
-        transliterateAtOnce(inputString);
-      }
-      else {
-        var currentLetter = letter; // for cross checking
-        var previousContent = nepali.value;
-        var returnValue;
-
-        var KeyID = event.keyCode;
-
-        switch(KeyID) {
-          case 13:
-          // enter
-          completeLetterIfNotComplete(letter);
-          break;
-
-          default:
-          transliterate(letter, currentLetter, previousContent, returnValue);
-          break;
-        }
-      }      
-    }, false);
-  }
-
-  this.deleteAfterBackspaceOrDelete = function() {
-    var returnedVal;
-    if (english.value) {
-      setLetterInfo('', '','','');
-      returnedVal = transliterateAtOnce(english.value);
-    }
-    else {
-      setLetterInfo('', '','','');
-    }
-    if (returnedVal) {
-      return returnedVal;      
-    }
-    else {
-      return false;
-    }
-  }
-
   this.transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
     var letter = letterVal;
     var currentLetter = currentLetterVal;
@@ -615,30 +561,25 @@ function LipifyModel () {
     };
     return previousContentForAtOnce;
   }
-  
+
   var transliterateAtOnce = this.transliterateAtOnce; // so that transliterateAtOnce can be reused within this class
 
-  var isVowel = function(letter) {
-    return vowels[letter];
-  }
-
-  var isConsonant = function(letter) {
-    return consonants[letter];
-  }
-
-  var isConsonant2 = function(letter) {
-    return consonants2[letter];
-  }
-
-  var isSpace = function(letter) {
-    return space[letter];
-  }  
-
-  var setLetterInfo = function(undeterminedVal, previousLetterVal, previousLastLetterVal, halfLetterWithRVal) {
-    undetermined = undeterminedVal;
-    previousLetter = previousLetterVal;
-    previousLastLetter = previousLastLetterVal;
-    halfLetterWithR = halfLetterWithRVal;
+  this.deleteAfterBackspaceOrDelete = function() {
+    var returnedVal;
+    if (english.value) {
+      setLetterInfo('', '','','');
+      returnedVal = transliterateAtOnce(english.value);
+    }
+    else {
+      setLetterInfo('', '','','');
+    }
+    if (returnedVal) {
+      return returnedVal;      
+    }
+    else {
+      previousContentForAtOnce = '';
+      return false;
+    }
   }
 
   this.completeLetterIfNotComplete = function(letter) {
@@ -677,6 +618,29 @@ function LipifyModel () {
 
     return previousContentForAtOnce;
   }
+
   var completeLetterIfNotComplete = this.completeLetterIfNotComplete;
 
+  var isVowel = function(letter) {
+    return vowels[letter];
+  }
+
+  var isConsonant = function(letter) {
+    return consonants[letter];
+  }
+
+  var isConsonant2 = function(letter) {
+    return consonants2[letter];
+  }
+
+  var isSpace = function(letter) {
+    return space[letter];
+  }  
+
+  var setLetterInfo = function(undeterminedVal, previousLetterVal, previousLastLetterVal, halfLetterWithRVal) {
+    undetermined = undeterminedVal;
+    previousLetter = previousLetterVal;
+    previousLastLetter = previousLastLetterVal;
+    halfLetterWithR = halfLetterWithRVal;
+  }
 }
