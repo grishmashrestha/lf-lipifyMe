@@ -19,12 +19,44 @@ function LipifyMe () {
   }
 
   var transliterator = function() {
-    // startTransliterate();
+    startTransliterate();
     // listenForBackspaceAndDelete();
     listenForPaste();
   }
 
   var startTransliterate = function() {
+    english.addEventListener("keypress", function(event){
+      var letter = String.fromCharCode(event.charCode);
+
+      if (event.currentTarget.selectionStart < english.value.length) {
+        eigoFirst = english.value.substring(0, event.currentTarget.selectionStart);
+        eigoSecond = english.value.substring(event.currentTarget.selectionStart, english.value.length);
+        inputString = eigoFirst + letter + eigoSecond;
+        lipify.transliterateAtOnce(inputString);
+      }
+      else {
+        var currentLetter = letter; // for cross checking
+        var previousContent = nepali.value;
+        var returnValue;
+
+        var KeyID = event.keyCode;
+
+
+        switch(KeyID) {
+          case 13:
+          // enter
+          returnValue = lipify.completeLetterIfNotComplete(letter);
+          break;
+
+          default:
+          returnValue = lipify.transliterate(letter, currentLetter, previousContent, returnValue);
+          break;
+        }
+      }
+      if (returnValue) {
+        write.writeNepali(returnValue);        
+      }
+    }, false);
 
   }
 
