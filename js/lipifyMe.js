@@ -15,6 +15,29 @@ function LipifyMe () {
 
   this.on = function() {
     init();
+    transliterator();
+  }
+
+  var transliterator = function() {
+    // startTransliterate();
+    // listenForBackspaceAndDelete();
+    // listenForPaste();
+  }
+
+  var startTransliterate = function() {
+
+  }
+
+  var listenForBackspaceAndDelete = function() {
+
+  }
+
+  var listenForPaste = function() {
+    // english.addEventListener("paste",function(event){
+    //   var text = event.clipboardData.getData("text/plain");
+    //   var nepaliValue = lipify.transliterateAtOnce(text);
+    //   write.writeNepali(nepaliValue);
+    // });
   }
 }
 
