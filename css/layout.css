@@ -39,6 +39,7 @@ body {
 .main {
   margin: 0 auto;
   max-width: 73.125em;
+  min-height: 400px;
 }
 
 #lipifyMe {
