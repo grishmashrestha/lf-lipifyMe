@@ -204,6 +204,18 @@ function LipifyModel () {
         setLetterInfo('', returnValue, currentLetter, '');
         rCount = 0;
       }
+      else if (halfLetterWithR  && (previousLastLetter == 'r') && (rCount == 2)) {
+        if (currentLetter == 'a') {
+          returnValue = consonants[previousLastLetter + currentLetter];
+        }
+        else {
+          returnValue = consonants2[previousLastLetter] + diacriticals[currentLetter];
+        }
+
+        previousContentForAtOnce = previousContent + returnValue;
+        setLetterInfo('', returnValue, currentLetter, '');
+        rCount = 0;
+      }
       else if (((currentLetter == 'i') || (currentLetter == 'e')) && (previousLetter == 'rr') && (rCount == 1)) { // for rri and rre
         letter = previousLetter + currentLetter;
         returnValue = vowels[letter];

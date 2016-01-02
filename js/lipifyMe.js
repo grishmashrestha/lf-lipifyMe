@@ -27,17 +27,17 @@ function LipifyMe () {
   var startTransliterate = function() {
     english.addEventListener("keypress", function(event){
       var letter = String.fromCharCode(event.charCode);
+      var returnValue;
 
       if (event.currentTarget.selectionStart < english.value.length) {
         eigoFirst = english.value.substring(0, event.currentTarget.selectionStart);
         eigoSecond = english.value.substring(event.currentTarget.selectionStart, english.value.length);
         inputString = eigoFirst + letter + eigoSecond;
-        lipify.transliterateAtOnce(inputString);
+        returnValue = lipify.transliterateAtOnce(inputString);
       }
       else {
         var currentLetter = letter; // for cross checking
         var previousContent = nepali.value;
-        var returnValue;
 
         var KeyID = event.keyCode;
 
