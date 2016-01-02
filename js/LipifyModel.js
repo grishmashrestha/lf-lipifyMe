@@ -184,6 +184,9 @@ function LipifyModel () {
     var currentLetter = currentLetterVal;
     var previousContent = previousContentVal || '';
     var returnValue = returnValueVal;
+    if ((halfLetterWithR) && rCount == 1 && currentLetter != 'r') {
+      rCount = 0;
+    }
 
     if (isVowel(currentLetter)) {
       var isGyn = undetermined.search('gyn'); // check and return position of 'gyn' in an undetermined letter
@@ -331,7 +334,7 @@ function LipifyModel () {
               // halfLetterWithR = returnValue;                   
             }
             else {
-              setLetterInfo(undetermined);
+              setLetterInfo(undetermined);              
             }
           }
           else if (previousLetter == 'k' && currentLetter == 's') {
@@ -568,6 +571,7 @@ function LipifyModel () {
         transliterate(currentLetter, currentLetter, previousContentForAtOnce, returnValue);        
       } 
     };
+    
     return previousContentForAtOnce;
   }
 
@@ -575,12 +579,13 @@ function LipifyModel () {
 
   this.deleteAfterBackspaceOrDelete = function() {
     var returnedVal;
+    rCount = 0;
     if (english.value) {
-      setLetterInfo('', '','','');
+      setLetterInfo('','','','');
       returnedVal = transliterateAtOnce(english.value);
     }
     else {
-      setLetterInfo('', '','','');
+      setLetterInfo('','','','');
     }
     if (returnedVal) {
       return returnedVal;      
