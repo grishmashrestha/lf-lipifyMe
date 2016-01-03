@@ -8,7 +8,7 @@ function LipifyMe () {
     write = new LipifyToView();
 
     english = write.createInputDiv();
-    nepali = write.createOutputDiv();
+    nepali = write.createAutocompleteDiv();
 
     lipify = new LipifyModel();
   }
@@ -26,8 +26,9 @@ function LipifyMe () {
 
   var transliteratorPredict = function() {
     english.addEventListener('keyup', function(event){
-      var autoCompleteResult = lipify.predict(this.value);
-      document.getElementById('nepali').innerHTML = autoCompleteResult;      
+      var currentLetter = String.fromCharCode(event.keyCode);
+      var autoCompleteResult = lipify.predict(this.value, currentLetter);
+      write.writeResult(autoCompleteResult);      
     });
   }
 
