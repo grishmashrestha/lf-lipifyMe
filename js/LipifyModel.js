@@ -156,9 +156,43 @@ function LipifyModel () {
   var halfLetterWithR;
   var rCount=0;
   var previousContentForAtOnce;
+  var previousCombos;
 
   var english = document.getElementById('transliterateThis');
   var nepali = document.getElementById('nepali');
+
+  this.predict = function(input, currentLetter) {
+    if (isSpace(currentLetter)) {
+      // debugger
+      // reset combos      
+    }
+
+    var reg = new RegExp(input.split('').join('\\w*').replace(/\W/, ""), 'i');
+    var comparables = Array.prototype.concat.apply([], [Object.keys(consonants),Object.keys(vowels),Object.keys(consonants2)]);
+    var matches=[];
+    var returnValue = comparables.filter(function(guess) {
+      if (guess.match(reg)) {
+        matches.push(consonants2[guess] || consonants[guess] || vowels[guess]);
+        return guess;
+      }
+    });
+
+    function onlyUnique(value, index, self) { 
+      return self.indexOf(value) === index;
+    }
+
+    var a = transliterateAtOnce(input);
+    if (a == '') {
+      a = transliterateAtOnce(input + '\\');
+    } 
+
+    var matched = Array.prototype.concat.apply([], [a, matches]);
+    matched = matched.filter(onlyUnique);
+    previousCombos = returnValue;
+    return (matched);
+  }
+
+
 
   this.transliterate = function(letterVal, currentLetterVal, previousContentVal, returnValueVal) {
     var letter = letterVal;
@@ -558,6 +592,7 @@ function LipifyModel () {
   }
 
   this.transliterateAtOnce = function(inputString) {
+    setLetterInfo('','','','');
     var letter, currentLetter, previousContent, returnValue;
     previousContentForAtOnce = '';
 
@@ -571,7 +606,6 @@ function LipifyModel () {
         transliterate(currentLetter, currentLetter, previousContentForAtOnce, returnValue);        
       } 
     };
-    
     return previousContentForAtOnce;
   }
 
