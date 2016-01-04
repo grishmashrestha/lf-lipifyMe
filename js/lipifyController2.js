@@ -27,8 +27,13 @@ function LipifyMe () {
   var transliteratorPredict = function() {
     english.addEventListener('keyup', function(event){
       var currentLetter = String.fromCharCode(event.keyCode);
-      var autoCompleteResult = lipify.predict(this.value, currentLetter);
-      write.writeResult(autoCompleteResult);      
+      if (this.value == '') {
+        write.writeResult(['']);
+      }
+      else {
+        var autoCompleteResult = lipify.predict(this.value, currentLetter);
+        write.writeResult(autoCompleteResult);              
+      }
     });
   }
 
