@@ -55,6 +55,20 @@ body {
   resize: none;
 }
 
+.keyMap {
+  width: 100%;
+}
+
+.keyMapImages {
+  width: 75%;
+  margin: 0 auto;
+}
+
+.keyMapImages img {
+  padding: 10px;
+  float: left;
+}
+
 .footerWrapper {
   width: 100%;
   background-color: #111111;
