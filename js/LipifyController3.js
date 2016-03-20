@@ -1,64 +1,39 @@
 $(function() {
-  var availableTags = [
-    "ActionScript",
-    "AppleScript",
-    "Asp",
-    "BASIC",
-    "C",
-    "C++",
-    "Clojure",
-    "COBOL",
-    "ColdFusion",
-    "Erlang",
-    "Fortran",
-    "Groovy",
-    "Haskell",
-    "Java",
-    "JavaScript",
-    "Lisp",
-    "Perl",
-    "PHP",
-    "Python",
-    "Ruby",
-    "Scala",
-    "Scheme"
-  ];
-  function split( val ) {
+  var availableTags;
+  var lipify = new LipifyModel();
+  function split(val) {
     return val.split(" ");
   }
-  function extractLast( term ) {
-    return split( term ).pop();
+  function extractLast(term) {
+    return split(term).pop();
   }
 
-  $( "#transliterateThis" )
+  $("#transliterateThis")
     // don't navigate away from the field on tab when selecting an item
-    .bind( "keydown", function( event ) {
-      if ( event.keyCode === $.ui.keyCode.TAB &&
-          $( this ).autocomplete( "instance" ).menu.active ) {
+    .bind("keyup", function(event) {
+      availableTags = lipify.predict(extractLast(this.value)); 
+      if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
       }
     })
     .autocomplete({
       minLength: 0,
-      source: function( request, response ) {
+      source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
-        response( $.ui.autocomplete.filter(
-          availableTags, extractLast( request.term ) ) );
+        response(availableTags);
       },
       focus: function() {
         // prevent value inserted on focus
         return false;
       },
-      select: function( event, ui ) {
-        var terms = split( this.value );
-        debugger
+      select: function(event, ui) {
+        var terms = split(this.value);
         // remove the current input
         terms.pop();
         // add the selected item
-        terms.push( ui.item.value );
+        terms.push(ui.item.value);
         // add placeholder to get the comma-and-space at the end
         terms.push("");
-        debugger
         this.value = terms.join(" ");
         return false;
       }

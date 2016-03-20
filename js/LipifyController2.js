@@ -31,7 +31,8 @@ function LipifyMe () {
         write.writeResult(['']);
       }
       else {
-        var autoCompleteResult = lipify.predict(this.value, currentLetter);
+        debugger
+        var autoCompleteResult = lipify.predict(this.value);
         write.writeResult(autoCompleteResult);              
       }
     });

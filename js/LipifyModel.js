@@ -159,12 +159,7 @@ function LipifyModel () {
   var english = document.getElementById('transliterateThis');
   var nepali = document.getElementById('nepali');
 
-  this.predict = function(input, currentLetter) {
-    if (isSpace(currentLetter)) {
-      // debugger
-      // reset combos      
-    }
-
+  this.predict = function(input) {
     var reg = new RegExp(input.split('').join('\\w*').replace(/\W/, ""), 'i');
     var comparables = Array.prototype.concat.apply([], [Object.keys(consonants),Object.keys(vowels),Object.keys(consonants2)]);
     var matches=[];
