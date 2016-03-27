@@ -11,13 +11,13 @@ $(function() {
   $("#transliterateThis")
     // don't navigate away from the field on tab when selecting an item
     .bind("keyup", function(event) {
-      availableTags = lipify.predict(extractLast(this.value)); 
+      availableTags = lipify.predict(extractLast(this.value));
       if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
       }
     })
     .autocomplete({
-      minLength: 0,
+      minLength: 1,
       source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
         response(availableTags);
